@@ -6,3 +6,10 @@
 //
 
 import Foundation
+import UIKit
+
+class NetworkMnanger {
+    
+    static let shared = NetworkMnanger()
+    private init () {}
+}
