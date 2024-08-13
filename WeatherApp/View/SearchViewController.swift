@@ -5,61 +5,50 @@
 //  Created by 박승환 on 8/12/24.
 //
 
-import Foundation
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
 
 class SearchViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
-    private let titleLabel: UILabel = {
-        let label = UILabel()
-        label.text = "날씨"
-        label.font = .boldSystemFont(ofSize: 40)
-        return label
-    }()
+    private let disposeBag = DisposeBag()
+    private var searchView = SearchView(frame: .zero)
     
-    private lazy var collectionView: UICollectionView = {
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: configureLayout())
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.isPagingEnabled = true
-        collectionView.showsVerticalScrollIndicator = false
-        collectionView.showsHorizontalScrollIndicator = false
-        return collectionView
-    }()
-    
+    override func loadView() {
+        searchView = SearchView(frame: UIScreen.main.bounds)
+        self.view = searchView
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
-        collectionView.delegate = self
-        collectionView.dataSource = self
-        collectionView.register(SearchCollectionViewCell.self, forCellWithReuseIdentifier: "SearchCollectionViewCell")
-        configureUI()
+        searchView.collectionView.delegate = self
+        searchView.collectionView.dataSource = self
+        searchView.collectionView.register(SearchCollectionViewCell.self, forCellWithReuseIdentifier: "SearchCollectionViewCell")
+        bindSearchBar()
+    }
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
     }
     
-    private func configureUI() {
-        view.backgroundColor = .white
-        view.addSubview(titleLabel)
-        view.addSubview(collectionView)
+    private func bindSearchBar() {
+        NotificationCenter.default.rx.notification(UIResponder.keyboardWillShowNotification)
+            .subscribe(onNext: { [weak self] _ in
+                UIView.animate(withDuration: 0.3) {
+                    self?.view.frame.origin.y = -70
+                    self?.searchView.hideTitle()
+                }
+            }).disposed(by: disposeBag)
         
-        titleLabel.snp.makeConstraints {
-            $0.top.equalTo(view.safeAreaLayoutGuide.snp.top)
-            $0.leading.trailing.equalToSuperview().inset(20)
-            $0.height.equalTo(50)
-        }
-        
-        collectionView.snp.makeConstraints {
-            $0.top.equalTo(titleLabel.snp.bottom).offset(10)
-            $0.leading.trailing.equalToSuperview().inset(20)
-            $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
-        }
+        NotificationCenter.default.rx.notification(UIResponder.keyboardWillHideNotification)
+            .subscribe(onNext: { [weak self] _ in
+                UIView.animate(withDuration: 0.3) {
+                    self?.view.frame.origin.y = 0
+                    self?.searchView.showTitle()
+                }
+            }).disposed(by: disposeBag)
     }
     
-    private func configureLayout() -> UICollectionViewFlowLayout {
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .vertical
-        layout.minimumLineSpacing = 10
-        layout.minimumInteritemSpacing = 10
-        return layout
-    }
+    
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return 10
