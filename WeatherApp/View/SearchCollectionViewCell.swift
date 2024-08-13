@@ -105,6 +105,8 @@ class SearchCollectionViewCell: UICollectionViewCell {
         firstStackView.addArrangedSubview(timeLabel)
         //득령 추가
         tempLabel.text = "\(weather.main.temp)"
+        maxTempLabel.text = "\(weather.main.tempMax)"
+         print("\(weather.main.temp)")
     }
     
     
