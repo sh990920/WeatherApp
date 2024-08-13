@@ -14,7 +14,7 @@ class WeatherViewModel {
     private let disposeBag = DisposeBag()
     
     // UI와 바인딩될 날씨 데이터를 보유하는 BehaviorSubject
-    let weatherDataSubject = BehaviorSubject<Welcome?>(value: nil)
+    let weatherDataSubject = BehaviorSubject<[List]>(value: [])
     
     let network = NetworkMnanger.shared
     
@@ -30,11 +30,13 @@ class WeatherViewModel {
             //network 요청결과 처리
             switch result {
             case .success(let weatherData):
+                print("+++called SUCCESS WeatherViewmodel+++")
                 DispatchQueue.main.async {
-                    self?.weatherDataSubject.onNext(weatherData)
+                    let weatherList = weatherData.list
+                    self?.weatherDataSubject.onNext(weatherList)
                 }
             case .failure(let error):
-                print("called Weater Viewmodel: \(error)")
+                print("called ERROR Weater Viewmodel: \(error)")
             }
         }
     }

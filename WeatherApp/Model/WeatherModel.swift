@@ -26,7 +26,7 @@ struct City: Codable {
 
 // MARK: - Coord
 struct Coord: Codable {
-    let lat, lon: Int
+    let lat, lon: Double
 }
 
 // MARK: - List
@@ -107,6 +107,13 @@ enum Description: String, Codable {
     case lightRain = "light rain"
     case overcastClouds = "overcast clouds"
     case scatteredClouds = "scattered clouds"
+    case unknown // 기본값
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let rawValue = try container.decode(String.self)
+        self = Description(rawValue: rawValue) ?? .unknown
+    }
 }
 
 enum MainEnum: String, Codable {

@@ -10,7 +10,8 @@ import UIKit
 import SnapKit
 
 class SearchCollectionViewCell: UICollectionViewCell {
-    
+    static let reuseIdentifier = "WeatherCollectionViewCell"
+
     private let firstStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
@@ -71,7 +72,7 @@ class SearchCollectionViewCell: UICollectionViewCell {
     private func configureUI() {
         contentView.layer.cornerRadius = 10
         contentView.backgroundColor = .blue
-        configureStackViewUI()
+//        configureStackViewUI(with: List)
         contentView.addSubview(firstStackView)
         contentView.addSubview(tempLabel)
         contentView.addSubview(maxTempLabel)
@@ -99,9 +100,11 @@ class SearchCollectionViewCell: UICollectionViewCell {
         
     }
     
-    private func configureStackViewUI() {
+     func configureStackViewUI(with weather: List) {
         firstStackView.addArrangedSubview(locationLabel)
         firstStackView.addArrangedSubview(timeLabel)
+        //득령 추가
+        tempLabel.text = "\(weather.main.temp)"
     }
     
     

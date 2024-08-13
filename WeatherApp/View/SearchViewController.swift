@@ -14,6 +14,18 @@ class SearchViewController: UIViewController, UICollectionViewDelegate, UICollec
     
     private let disposeBag = DisposeBag()
     private var searchView = SearchView(frame: .zero)
+    //득령추가
+    private let collectionView: UICollectionView = {
+            let layout = UICollectionViewFlowLayout()
+            layout.scrollDirection = .vertical
+            let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+            collectionView.translatesAutoresizingMaskIntoConstraints = false
+            collectionView.backgroundColor = .white
+            return collectionView
+        }()
+
+    
+    let weatherVM = WeatherViewModel()
     
     override func loadView() {
         searchView = SearchView(frame: UIScreen.main.bounds)
@@ -25,6 +37,9 @@ class SearchViewController: UIViewController, UICollectionViewDelegate, UICollec
         searchView.collectionView.dataSource = self
         searchView.collectionView.register(SearchCollectionViewCell.self, forCellWithReuseIdentifier: "SearchCollectionViewCell")
         bindSearchBar()
+        
+        //득령추가
+        weatherVM.fetchWeather()
     }
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.view.endEditing(true)
@@ -47,6 +62,16 @@ class SearchViewController: UIViewController, UICollectionViewDelegate, UICollec
                 }
             }).disposed(by: disposeBag)
     }
+    //득령 추가
+    private func bindViewModel() {
+        weatherVM.weatherDataSubject
+            .observe(on: MainScheduler.instance)
+            .bind(to: collectionView.rx.items(
+                cellIdentifier: SearchCollectionViewCell.reuseIdentifier,
+                cellType: SearchCollectionViewCell.self)) { row, weaher, cell in
+                cell.configureStackViewUI(with: weaher)
+                }
+    }
     
     
     
@@ -62,6 +87,8 @@ class SearchViewController: UIViewController, UICollectionViewDelegate, UICollec
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SearchCollectionViewCell", for: indexPath) as! SearchCollectionViewCell
+        
+        
         return cell
     }
     
