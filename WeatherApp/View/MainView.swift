@@ -8,7 +8,6 @@
 import UIKit
 import SnapKit
 import RxSwift
-import SwiftUI
 
 class MainView: UIView {
 
@@ -47,9 +46,10 @@ class MainView: UIView {
     private lazy var sunsetDetailLabel = boldSystemFontLabel("19:56", 16, .white)
 
     // MARK: - 섹션별 뷰
-    private let topView = UIView()
-    private let midView = UIView()
-    private let bottomView = UIView()
+    private lazy var topView = UIView()
+    private lazy var midView = UIView()
+    private lazy var humidityContainer = UIView()
+    private lazy var sunriseSunsetContainer = UIView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -70,26 +70,28 @@ class MainView: UIView {
         locationLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(88)
             make.centerX.equalToSuperview()
+            make.height.greaterThanOrEqualTo(32)
         }
         
         locationDetailLabel.snp.makeConstraints { make in
             make.top.equalTo(locationLabel.snp.bottom).offset(8)
             make.centerX.equalToSuperview()
+            make.height.greaterThanOrEqualTo(16)
         }
         
         temperatureLabel.snp.makeConstraints { make in
             make.top.equalTo(locationDetailLabel.snp.bottom).offset(8)
             make.centerX.equalToSuperview()
+            make.height.greaterThanOrEqualTo(48)
         }
         
         descriptionLabel.snp.makeConstraints { make in
             make.top.equalTo(temperatureLabel.snp.bottom).offset(8)
             make.centerX.equalToSuperview()
+            make.height.greaterThanOrEqualTo(16)
         }
         
        // MARK: - 중간 뷰 레이아웃
-        let humidityContainer = UIView()
-        let sunriseSunsetContainer = UIView()
 
         // 습도 관련
         [humidityLabel, humidityDetailLabel].forEach {
@@ -99,12 +101,14 @@ class MainView: UIView {
         humidityLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(8)
             make.leading.equalToSuperview().offset(30)
+            make.height.equalTo(16)
         }
 
         humidityDetailLabel.snp.makeConstraints { make in
             make.top.equalTo(humidityLabel.snp.bottom).offset(8)
             make.leading.equalTo(humidityLabel.snp.leading)
             make.bottom.equalToSuperview().offset(-16)
+            make.height.equalTo(48)
         }
 
         // 일출, 일몰 관련
@@ -115,28 +119,33 @@ class MainView: UIView {
         sunriseLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(24)
             make.leading.equalToSuperview().offset(24)
+            make.height.equalTo(16)
         }
 
         sunriseDetailLabel.snp.makeConstraints { make in
             make.top.equalTo(sunriseLabel.snp.bottom).offset(8)
             make.leading.equalTo(sunriseLabel.snp.leading)
+            make.height.equalTo(16)
         }
 
         sunsetLabel.snp.makeConstraints { make in
             make.top.equalTo(sunriseDetailLabel.snp.bottom).offset(24)
             make.leading.equalTo(sunriseLabel.snp.leading)
+            make.height.equalTo(16)
         }
 
         sunsetDetailLabel.snp.makeConstraints { make in
             make.top.equalTo(sunsetLabel.snp.bottom).offset(8)
             make.leading.equalTo(sunriseLabel.snp.leading)
             make.bottom.equalToSuperview().offset(-16)
+            make.height.equalTo(16)
         }
 
         // MARK: - 습도, 일출, 일몰 관련 뷰
         [humidityContainer, sunriseSunsetContainer].forEach {
-            midView.addSubview($0)
+            midView.addSubview($0) // 중간 뷰에 추가
         }
+
         humidityContainer.snp.makeConstraints { make in
             make.leading.equalToSuperview()
             make.centerY.equalToSuperview()
@@ -158,53 +167,25 @@ class MainView: UIView {
         sunriseSunsetContainer.layer.cornerRadius = 10
     }
 
-    // MARK: - 상단, 중간, 하단 뷰 레이아웃
+    // MARK: - 상단, 중간 뷰 레이아웃
     private func setupUI() {
-        [topView, midView, bottomView].forEach {
-            self.addSubview($0)
-        }
+        self.addSubview(topView)
+        self.addSubview(midView)
 
         topView.snp.makeConstraints { make in
             make.top.equalToSuperview()
             make.leading.equalToSuperview().offset(20)
             make.trailing.equalToSuperview().offset(-20)
-            make.height.equalTo(self).multipliedBy(0.4)
+            make.height.equalTo(self).multipliedBy(0.3)
         }
-        
+
         midView.snp.makeConstraints { make in
-            make.top.equalTo(topView.snp.bottom)
+            make.top.equalTo(topView.snp.bottom).offset(16)
             make.leading.equalToSuperview().offset(20)
             make.trailing.equalToSuperview().offset(-20)
+            make.height.equalTo(152)
         }
-        
-        bottomView.snp.makeConstraints { make in
-            make.top.equalTo(midView.snp.bottom)
-            make.leading.equalToSuperview().offset(20)
-            make.trailing.equalToSuperview().offset(-20)
-            make.bottom.equalToSuperview()
-        }
-        
-        // Bottom View에서 CollectionView 추가 필요 (추후 구현)
     }
 }
 
-struct PreView: PreviewProvider {
-  static var previews: some View {
-    MainViewController().toPreview()
-  }
-}
-#if DEBUG
-extension UIViewController {
-  private struct Preview: UIViewControllerRepresentable {
-      let viewController: UIViewController
-      func makeUIViewController(context: Context) -> UIViewController {
-        return viewController
-      }
-      func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
-      }
-    }
-    func toPreview() -> some View {
-      Preview(viewController: self)
-    }
-}
-#endif
+
