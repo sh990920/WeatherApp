@@ -9,9 +9,9 @@ import UIKit
 import SnapKit
 
 class MainViewController: UIViewController {
-
+    
     private let mainView = MainView()
-
+    
     override func loadView() {
         self.view = mainView
     }
@@ -23,9 +23,9 @@ class MainViewController: UIViewController {
     }
     
     private func configureUI() {
-//        mainView.backgroundColor = .white
+        //        mainView.backgroundColor = .white
     }
-
+    
     private func configureTableView() {
         mainView.tableView.dataSource = self
         mainView.tableView.delegate = self
@@ -46,9 +46,8 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate {
         }
         
         // 셀 UI 디테일 설정
-        cell.backgroundColor = UIColor.gray.withAlphaComponent(0.7)
+        cell.backgroundColor = .clear
         cell.selectionStyle = .none
-        
         
         // 임시 더미데이터
         let days = ["오늘", "화", "수", "목", "금"]

@@ -7,7 +7,6 @@
 
 import UIKit
 import SnapKit
-import RxSwift
 
 class MainView: UIView {
     
@@ -65,7 +64,7 @@ class MainView: UIView {
     let tableView: UITableView = {
         let tableView = UITableView()
         tableView.register(MainTableViewCell.self, forCellReuseIdentifier: MainTableViewCell.identifier)
-        tableView.backgroundColor = UIColor.gray.withAlphaComponent(0.7)
+        tableView.backgroundColor = UIColor.darkGray.withAlphaComponent(0.8)
         tableView.clipsToBounds = true
         tableView.layer.cornerRadius = 10
         tableView.isScrollEnabled = false
@@ -151,7 +150,7 @@ class MainView: UIView {
             $0.width.equalTo(168)
         }
         
-        // 밀몰, 일출 레이블 스택뷰
+        // 일몰, 일출 레이블 스택뷰
         sunriseSunsetContainer.snp.makeConstraints {
             $0.trailing.equalToSuperview()
             $0.centerY.equalToSuperview()
@@ -160,8 +159,8 @@ class MainView: UIView {
         }
         
         // 스택뷰 디테일
-        humidityContainer.backgroundColor = UIColor.gray.withAlphaComponent(0.7)
-        sunriseSunsetContainer.backgroundColor = UIColor.gray.withAlphaComponent(0.7)
+        humidityContainer.backgroundColor = UIColor.darkGray.withAlphaComponent(0.7)
+        sunriseSunsetContainer.backgroundColor = UIColor.darkGray.withAlphaComponent(0.7)
         humidityContainer.layer.cornerRadius = 10
         sunriseSunsetContainer.layer.cornerRadius = 10
     }
@@ -173,7 +172,7 @@ class MainView: UIView {
         tableView.snp.makeConstraints {
             $0.top.equalTo(midView.snp.bottom).offset(20)
             $0.leading.trailing.equalToSuperview().inset(20)
-            $0.height.equalTo(280)
+            $0.height.equalTo(279)
         }
     }
     
@@ -265,7 +264,7 @@ class MainView: UIView {
     // MARK: - 커스텀 헤더 뷰
     private func createTableViewHeader() -> UIView {
         let headerView = UIView()
-        headerView.backgroundColor = UIColor.gray.withAlphaComponent(0.5)
+        headerView.backgroundColor = .clear
         headerView.layer.cornerRadius = 10
         headerView.layer.masksToBounds = true
         
