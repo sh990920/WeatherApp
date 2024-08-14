@@ -14,6 +14,7 @@ class MainTableViewCell: UITableViewCell {
     
     private let dayLabel: UILabel = {
         let label = UILabel()
+        label.textColor = .white
         label.font = UIFont.systemFont(ofSize: 16, weight: .bold)
         return label
     }()
@@ -27,6 +28,7 @@ class MainTableViewCell: UITableViewCell {
     
     private let temperatureLabel: UILabel = {
         let label = UILabel()
+        label.textColor = .white
         label.font = UIFont.systemFont(ofSize: 14)
         return label
     }()

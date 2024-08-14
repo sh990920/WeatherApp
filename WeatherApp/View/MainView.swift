@@ -32,18 +32,28 @@ class MainView: UIView {
     
     // MARK: - 레이블 디테일 - DS
     // 고정값
-    private lazy var locationLabel = boldSystemFontLabel("나의 위치", 32, .black)
+    private lazy var locationLabel = boldSystemFontLabel("나의 위치", 32, .white)
     private lazy var humidityLabel = boldSystemFontLabel("습도", 16, .white)
     private lazy var sunriseLabel = boldSystemFontLabel("일출", 16, .white)
     private lazy var sunsetLabel = boldSystemFontLabel("일몰", 16, .white)
     
     // 변동사항 있음
-    private lazy var locationDetailLabel = systemFontLabel("서울시", 16, .black)
-    private lazy var temperatureLabel = boldSystemFontLabel("30°C", 48, .black)
-    private lazy var descriptionLabel = systemFontLabel("바다 속 보다 더 촉촉함", 16, .black)
+    private lazy var locationDetailLabel = systemFontLabel("서울시", 16, .white)
+    private lazy var temperatureLabel = boldSystemFontLabel("30°C", 48, .white)
+    private lazy var descriptionLabel = systemFontLabel("바다 속 보다 더 촉촉함", 16, .white)
     private lazy var humidityDetailLabel = systemFontLabel("70%", 48, .white)
     private lazy var sunriseDetailLabel = boldSystemFontLabel("05:38", 16, .white)
     private lazy var sunsetDetailLabel = boldSystemFontLabel("19:56", 16, .white)
+    
+    // MARK: - 배경이미지
+    private let backgroundImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        imageView.alpha = 0.4
+        imageView.image = UIImage(named: "rain") // 배경 이미지 설정
+        return imageView
+    }()
     
     // MARK: - 섹션별 뷰
     private lazy var topView = UIView()
@@ -55,10 +65,14 @@ class MainView: UIView {
     let tableView: UITableView = {
         let tableView = UITableView()
         tableView.register(MainTableViewCell.self, forCellReuseIdentifier: MainTableViewCell.identifier)
-        tableView.separatorStyle = .none
+        tableView.backgroundColor = UIColor.gray.withAlphaComponent(0.7)
         tableView.clipsToBounds = true
         tableView.layer.cornerRadius = 10
         tableView.isScrollEnabled = false
+        
+        tableView.separatorStyle = .singleLine // 기본 선 스타일
+        tableView.separatorColor = .white // 구분선 색상
+        tableView.separatorInset = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15) // 좌우 여백
         return tableView
     }()
     
@@ -73,6 +87,7 @@ class MainView: UIView {
     }
     
     private func setupUI() {
+        backgroundLayout()
         setupTopViewLayout()
         setupMidViewLayout()
         setupTableViewLayout()
@@ -82,6 +97,22 @@ class MainView: UIView {
         configureTopViewLayout()
         configureMidViewLayout()
         configureTableViewHeader()
+    }
+    
+    // MARK: - 백그라운드 이미지 뷰 레이아웃
+    private func backgroundLayout() {
+        // 백그라운드 이미지뷰를 메인 뷰에 추가
+        self.addSubview(backgroundImageView)
+        
+        // 다른 뷰들을 추가하기 전에 백그라운드 이미지 뷰를 뒤에 배치
+        [backgroundImageView, topView, midView].forEach {
+            self.addSubview($0)
+        }
+        
+        // backgroundImageView 제약 조건 설정
+        backgroundImageView.snp.makeConstraints { make in
+            make.edges.equalToSuperview() // 슈퍼뷰(메인 뷰)에 맞추기
+        }
     }
     
     // MARK: - 상단, 중간 뷰 레이아웃
@@ -129,8 +160,8 @@ class MainView: UIView {
         }
         
         // 스택뷰 디테일
-        humidityContainer.backgroundColor = .systemBlue
-        sunriseSunsetContainer.backgroundColor = .systemBlue
+        humidityContainer.backgroundColor = UIColor.gray.withAlphaComponent(0.7)
+        sunriseSunsetContainer.backgroundColor = UIColor.gray.withAlphaComponent(0.7)
         humidityContainer.layer.cornerRadius = 10
         sunriseSunsetContainer.layer.cornerRadius = 10
     }
@@ -142,7 +173,7 @@ class MainView: UIView {
         tableView.snp.makeConstraints {
             $0.top.equalTo(midView.snp.bottom).offset(20)
             $0.leading.trailing.equalToSuperview().inset(20)
-            $0.bottom.equalToSuperview()
+            $0.height.equalTo(280)
         }
     }
     
@@ -234,7 +265,7 @@ class MainView: UIView {
     // MARK: - 커스텀 헤더 뷰
     private func createTableViewHeader() -> UIView {
         let headerView = UIView()
-        headerView.backgroundColor = UIColor.systemBlue
+        headerView.backgroundColor = UIColor.gray.withAlphaComponent(0.5)
         headerView.layer.cornerRadius = 10
         headerView.layer.masksToBounds = true
         

@@ -23,7 +23,7 @@ class MainViewController: UIViewController {
     }
     
     private func configureUI() {
-        mainView.backgroundColor = .white
+//        mainView.backgroundColor = .white
     }
 
     private func configureTableView() {
@@ -46,7 +46,7 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate {
         }
         
         // 셀 UI 디테일 설정
-        cell.backgroundColor = UIColor.systemBlue
+        cell.backgroundColor = UIColor.gray.withAlphaComponent(0.7)
         cell.selectionStyle = .none
         
         
