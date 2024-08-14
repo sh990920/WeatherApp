@@ -19,7 +19,6 @@ class NetworkMnanger {
                     completion(.failure(error))
                     return
                 }
-
                 guard let data = data else {
                     completion(.failure(NSError(domain: "데이터 에러", code: -1, userInfo: nil)))
                     return
