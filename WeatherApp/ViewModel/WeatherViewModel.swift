@@ -26,7 +26,7 @@ class WeatherViewModel {
         }
         
         //networkmanager을 통해 데이터가져오기
-        network.fetchWeatherData(url: url) { [weak self] result in
+        network.fetchData(url: url) { [weak self] (result: Result<Welcome, Error>) in
             //network 요청결과 처리
             switch result {
             case .success(let weatherData):
