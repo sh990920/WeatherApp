@@ -5,75 +5,90 @@
 //  Created by 박승환 on 8/12/24.
 //
 
-import Foundation
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
 
-class SearchViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+class SearchViewController: UIViewController, UICollectionViewDelegateFlowLayout {
     
-    private let titleLabel: UILabel = {
-        let label = UILabel()
-        label.text = "날씨"
-        label.font = .boldSystemFont(ofSize: 40)
-        return label
-    }()
+    private let disposeBag = DisposeBag()
+    private var searchView = SearchView(frame: .zero)
+    //득령추가
+    private let collectionView: UICollectionView = {
+            let layout = UICollectionViewFlowLayout()
+            layout.scrollDirection = .vertical
+            let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+            collectionView.translatesAutoresizingMaskIntoConstraints = false
+            collectionView.backgroundColor = .white
+            return collectionView
+        }()
+
     
-    private lazy var collectionView: UICollectionView = {
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: configureLayout())
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.isPagingEnabled = true
-        collectionView.showsVerticalScrollIndicator = false
-        collectionView.showsHorizontalScrollIndicator = false
-        return collectionView
-    }()
+    let weatherVM = WeatherViewModel()
     
+    override func loadView() {
+        searchView = SearchView(frame: UIScreen.main.bounds)
+        self.view = searchView
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
-        collectionView.delegate = self
-        collectionView.dataSource = self
-        collectionView.register(SearchCollectionViewCell.self, forCellWithReuseIdentifier: "SearchCollectionViewCell")
-        configureUI()
-    }
-    
-    private func configureUI() {
-        view.backgroundColor = .white
-        view.addSubview(titleLabel)
-        view.addSubview(collectionView)
+        searchView.collectionView.delegate = self
+//        searchView.collectionView.dataSource = self
+        searchView.collectionView.register(SearchCollectionViewCell.self, forCellWithReuseIdentifier: "WeatherCollectionViewCell")
+        bindSearchBar()
         
-        titleLabel.snp.makeConstraints {
-            $0.top.equalTo(view.safeAreaLayoutGuide.snp.top)
-            $0.leading.trailing.equalToSuperview().inset(20)
-            $0.height.equalTo(50)
-        }
+        //득령추가
+        print("called SearchVC")
+        bindViewModel()
+        weatherVM.fetchWeather()
+    }
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+    }
+    
+    private func bindSearchBar() {
+        NotificationCenter.default.rx.notification(UIResponder.keyboardWillShowNotification)
+            .subscribe(onNext: { [weak self] _ in
+                UIView.animate(withDuration: 0.3) {
+                    self?.view.frame.origin.y = -70
+                    self?.searchView.hideTitle()
+                }
+            }).disposed(by: disposeBag)
         
-        collectionView.snp.makeConstraints {
-            $0.top.equalTo(titleLabel.snp.bottom).offset(10)
-            $0.leading.trailing.equalToSuperview().inset(20)
-            $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
-        }
+        NotificationCenter.default.rx.notification(UIResponder.keyboardWillHideNotification)
+            .subscribe(onNext: { [weak self] _ in
+                UIView.animate(withDuration: 0.3) {
+                    self?.view.frame.origin.y = 0
+                    self?.searchView.showTitle()
+                }
+            }).disposed(by: disposeBag)
+    }
+    private func bindViewModel() {
+        weatherVM.weatherDataSubject
+            .observe(on: MainScheduler.instance)
+            .bind(to: searchView.collectionView.rx.items(
+                cellIdentifier: SearchCollectionViewCell.reuseIdentifier,
+                cellType: SearchCollectionViewCell.self)) { row, weatherItem, cell in
+                    cell.configureStackViewUI(with: weatherItem)
+            }
+            .disposed(by: disposeBag)
     }
     
-    private func configureLayout() -> UICollectionViewFlowLayout {
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .vertical
-        layout.minimumLineSpacing = 10
-        layout.minimumInteritemSpacing = 10
-        return layout
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
-    }
-    
+//    
+//    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+//        return 10
+//    }
+//    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let height = collectionView.frame.height / 4 - 10
         let widht = collectionView.frame.width
         return CGSize(width: widht, height: height)
     }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SearchCollectionViewCell", for: indexPath) as! SearchCollectionViewCell
-        return cell
-    }
+//    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+//        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SearchCollectionViewCell", for: indexPath) as! SearchCollectionViewCell
+//        return cell
+//    }
     
 }
