@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		6BB755FF2C6C41BE002F9126 /* MainTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BB755FE2C6C41BE002F9126 /* MainTableViewCell.swift */; };
+		6BB756052C6D0405002F9126 /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BB756042C6D0405002F9126 /* MainTabBarController.swift */; };
 		A22C61B32C699F9C00F23D03 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A22C61B22C699F9C00F23D03 /* AppDelegate.swift */; };
 		A22C61B52C699F9C00F23D03 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A22C61B42C699F9C00F23D03 /* SceneDelegate.swift */; };
 		A22C61B72C699F9C00F23D03 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A22C61B62C699F9C00F23D03 /* MainViewController.swift */; };
@@ -29,6 +30,7 @@
 
 /* Begin PBXFileReference section */
 		6BB755FE2C6C41BE002F9126 /* MainTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTableViewCell.swift; sourceTree = "<group>"; };
+		6BB756042C6D0405002F9126 /* MainTabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
 		A22C61AF2C699F9C00F23D03 /* WeatherApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WeatherApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A22C61B22C699F9C00F23D03 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A22C61B42C699F9C00F23D03 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -97,6 +99,7 @@
 				A22C61B62C699F9C00F23D03 /* MainViewController.swift */,
 				AF55D0882C69D1B2000231FA /* MainView.swift */,
 				6BB755FE2C6C41BE002F9126 /* MainTableViewCell.swift */,
+				6BB756042C6D0405002F9126 /* MainTabBarController.swift */,
 				A22C61C82C69F15400F23D03 /* SearchViewController.swift */,
 				A22C61CA2C69F17200F23D03 /* SearchView.swift */,
 				A22C61D62C6AF11100F23D03 /* SearchCollectionViewCell.swift */,
@@ -222,6 +225,7 @@
 				A22C61B72C699F9C00F23D03 /* MainViewController.swift in Sources */,
 				6BB755FF2C6C41BE002F9126 /* MainTableViewCell.swift in Sources */,
 				AF55D0892C69D1B2000231FA /* MainView.swift in Sources */,
+				6BB756052C6D0405002F9126 /* MainTabBarController.swift in Sources */,
 				AF55D0852C69D107000231FA /* NetworkMnanger.swift in Sources */,
 				A22C61B32C699F9C00F23D03 /* AppDelegate.swift in Sources */,
 				A22C61B52C699F9C00F23D03 /* SceneDelegate.swift in Sources */,
