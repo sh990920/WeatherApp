@@ -44,16 +44,11 @@ final class Endpoint{
     
     func creatURL() -> URL? {
         var urlComponents = URLComponents(string: baseURL.appending(path))
-        print("creatURL() urlComponents: \(urlComponents) ")
-        
         
         var queryItems = [URLQueryItem]() // name, value 속성 있음
         
-        
         queryParameters.forEach {
-            print("여기에 들어왔음?????")
             queryItems.append(URLQueryItem(name: $0.key, value: "\($0.value)"))
-            print("URLQueryItem(name: $0.name, value: $0.value): \(queryItems)")
         }
         
         print("creatURL() queryItems: \(queryItems)")
@@ -61,11 +56,12 @@ final class Endpoint{
         urlComponents?.queryItems = queryItems
         
         return urlComponents?.url
-        
     }
     
-    func creatEndpoint() throws -> URLRequest {   //여기서 throws 사용하는 이유?
-        guard let url = creatURL() else {throw NetworkError.invalidUrl}
+    
+    func creatEndpoint() throws -> URLRequest {
+        guard let url = creatURL() else { throw NetworkError.invalidUrl}
+        print("creatEndpoint() -> url:\(url) ")
         
         var request = URLRequest(url: url)
         request.httpMethod = method.rawValue
