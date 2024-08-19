@@ -23,20 +23,20 @@ enum HTTPMethodType: String {
 final class Endpoint{
     let baseURL: String
     let method: HTTPMethodType
-    let headerParpmeters: [String: String]
+    let headerParameters: [String: String]
     let path: String
-    let queryParameters: [String: Any]
+    var queryParameters: [String: String]
     
     
     init(baseURL: String = "",
          method: HTTPMethodType = .get,
-         headerParpmeters: [String : String] = [:],
+         headerParameters: [String : String] = [:],
          path: String = "",
-         queryParameters: [String : Any] = [:]
+         queryParameters: [String : String] = [:]
     ) {
         self.baseURL = baseURL
         self.method = method
-        self.headerParpmeters = headerParpmeters
+        self.headerParameters = headerParameters
         self.path = path
         self.queryParameters = queryParameters
     }
@@ -48,7 +48,7 @@ final class Endpoint{
         var queryItems = [URLQueryItem]() // name, value 속성 있음
         
         queryParameters.forEach {
-            queryItems.append(URLQueryItem(name: $0.key, value: "\($0.value)"))
+            queryItems.append(URLQueryItem(name: $0.key, value: $0.value))
         }
         
         print("creatURL() queryItems: \(queryItems)")
@@ -61,17 +61,21 @@ final class Endpoint{
     
     func creatEndpoint() throws -> URLRequest {
         guard let url = creatURL() else { throw NetworkError.invalidUrl}
-        print("creatEndpoint() -> url:\(url) ")
         
         var request = URLRequest(url: url)
         request.httpMethod = method.rawValue
         
         var allHeaders: [String: String] = [:]
-        headerParpmeters.forEach {
+        headerParameters.forEach {
             allHeaders.updateValue($1, forKey: $0)
         }
+        
+        request.allHTTPHeaderFields = headerParameters
+        
         return request
     }
+    
+
     
 }
 

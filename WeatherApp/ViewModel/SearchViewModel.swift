@@ -16,12 +16,17 @@ class SearchViewModel {
     let locationInfoSubject = PublishSubject<address>()
     let network = NetworkMnanger.shared
     
+//    lazy var originAddress = "전북 삼성동 100"
+//
+//    lazy var encodedAddress = originAddress.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
+
+    
     //MARK: - 검색한 위치의 X, Y 좌표 구하기
     func fetchLocation(){
         let endpoint = Endpoint(
             baseURL: "https://dapi.kakao.com",
-            headerParpmeters: ["Authorization":"KakaoAK 3c7a90563f65e8afc9ebfac9b753c698"],
-            path: "/v2/local/search/address.json",
+            headerParameters: ["Authorization":"KakaoAK 3c7a90563f65e8afc9ebfac9b753c698"],
+            path: "/v2/local/search/address",
             queryParameters: ["query" : "전북 삼성동 100"]
         )
         
@@ -34,4 +39,8 @@ class SearchViewModel {
                 print("called ERROR Search ViewModel: \(error)")
             }).disposed(by: disposeBag)
     }
+    
 }
+
+
+

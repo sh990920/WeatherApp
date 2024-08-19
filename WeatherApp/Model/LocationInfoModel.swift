@@ -14,7 +14,15 @@ struct LocationInfo: Codable {
 
 // MARK: - Document
 struct Document: Codable {
-    let item: address
+//    let address: address
+    let address_name: String
+    let x: String
+    let y: String
+    
+    enum CodingKeys: String, CodingKey {
+        case address_name = "address_name"
+        case x, y
+    }
 }
 
 struct address: Codable{
