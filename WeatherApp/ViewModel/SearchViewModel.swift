@@ -14,17 +14,17 @@ class SearchViewModel {
     
     //view가 구독할 Subject
     let locationInfoSubject = PublishSubject<address>()
-    let network = NetworkMnanger.shared
+    let network = NetworkManager.shared
     
     //MARK: - 검색한 위치의 X, Y 좌표 구하기
     func fetchLocation(){
-        let endpoint = Endpoint(
+        let endpoint = Endpoint (
             baseURL: "https://dapi.kakao.com",
-            headerParpmeters: ["Authorization":"KakaoAK 3c7a90563f65e8afc9ebfac9b753c698"],
-            path: "/v2/local/search/address.json",
+            headerParameters: ["Authorization" : "KakaoAK 3c7a90563f65e8afc9ebfac9b753c698"], 
+            path: "/v2/local/search/address",
             queryParameters: ["query" : "전북 삼성동 100"]
         )
-        
+                
         network.fetch(endpoint: endpoint)
             .subscribe(onSuccess: { [weak self] (result: address) in
                 print("+++called SUCCESS Search View Model+++")
@@ -35,3 +35,4 @@ class SearchViewModel {
             }).disposed(by: disposeBag)
     }
 }
+    

@@ -17,7 +17,7 @@ class WeatherViewModel {
     let weatherDataSubject = BehaviorSubject<[List]>(value: [])
     let weatherCitySubject = BehaviorSubject<City>(value: City(id: 0, name:"", coord: Coord(lat: 0.0, lon: 0.0), country: "", population: 0, timezone: 0, sunrise: 0, sunset: 0))
     
-    let network = NetworkMnanger.shared
+    let network = NetworkManager.shared
     
     //MARK: - 날씨 가져오기
     func fetchWeather() {
