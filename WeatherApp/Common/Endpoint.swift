@@ -25,13 +25,13 @@ final class Endpoint {
     let method: HTTPMethodType
     let headerParameters: [String: String]
     let path: String
-    let queryParameters: [String: Any]
+    let queryParameters: [String: String]
     
     init(baseURL: String = "",
          method: HTTPMethodType = .get,
          headerParameters: [String : String] = [:],
          path: String = "",
-         queryParameters: [String : Any] = [:]
+         queryParameters: [String : String] = [:]
     ) {
         self.baseURL = baseURL
         self.method = method
@@ -47,13 +47,14 @@ final class Endpoint {
         
         queryParameters.forEach {
             queryItems.append(URLQueryItem(name: $0.key, value: "\($0.value)"))
+            print(queryItems)
         }
-        
-        print("createURL() queryItems: \(queryItems)")
-        
         urlComponents?.queryItems = queryItems
         
+
+        
         return urlComponents?.url
+        
     }
     
     func createEndpoint() throws -> URLRequest {
@@ -62,6 +63,9 @@ final class Endpoint {
         
         var request = URLRequest(url: url)
         request.httpMethod = method.rawValue
+        
+        
+        print("encodedUrl \(url)")
         
         // 직접 헤더 추가
         request.allHTTPHeaderFields = headerParameters

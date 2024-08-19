@@ -20,11 +20,15 @@ class SearchViewModel {
     func fetchLocation(){
         let endpoint = Endpoint (
             baseURL: "https://dapi.kakao.com",
-            headerParameters: ["Authorization" : "KakaoAK 3c7a90563f65e8afc9ebfac9b753c698"], 
+            headerParameters: ["Authorization": "KakaoAK 3c7a90563f65e8afc9ebfac9b753c698"],
             path: "/v2/local/search/address",
-            queryParameters: ["query" : "전북 삼성동 100"]
+            queryParameters: ["query" :"전북 삼성동 100"]
         )
-                
+//                
+//        curl -v -G GET "https://dapi.kakao.com/v2/local/search/address.json" \
+//          -H "Authorization: KakaoAK ${REST_API_KEY}" \
+//          --data-urlencode "query=전북 삼성동 100"
+        
         network.fetch(endpoint: endpoint)
             .subscribe(onSuccess: { [weak self] (result: address) in
                 print("+++called SUCCESS Search View Model+++")

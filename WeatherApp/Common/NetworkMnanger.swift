@@ -30,14 +30,16 @@ class NetworkManager {
                           let response = response as? HTTPURLResponse,
                           (200..<300).contains(response.statusCode) else {
                         observer(.failure(NetworkError.dataFetchFail))
-                        return
+                       return
                     }
                     
                     do {
                         let decodedData = try JSONDecoder().decode(T.self, from: data)
                         observer(.success(decodedData))
                     } catch {
-                        observer(.failure(NetworkError.decodingFail))
+                        let responseString = String(data: data, encoding: .utf8) ?? "No response data"
+                        print("Decoding failed. Response data: \(responseString)")
+                        observer(.failure(NetworkError.decodingFail))                   
                     }
                 }
                 
@@ -55,37 +57,37 @@ class NetworkManager {
         }
     }
 }
-    
-    
-    
+
+
+
 //    func fetchData<T: Decodable>(
 //        urlString: String?,
 //        querys: URLQueryItem?,
 //        completion: @escaping (Result<T, Error>) -> Void) {
-//            
+//
 //            // URL 유효성 검사
 //            guard let urlString,
 //                  var components = URLComponents(string: urlString) else { return }
 //            guard let url = components.url else { return }
-//            
+//
 //            //URLRequest 생성
 //            var request = URLRequest(url: url)
-//            
+//
 ////            if querys != nil {
 //                let safeQuerys = querys
-//                
+//
 ////                let headers: [String: String]? = [
 ////                    "Authorization": "KakaoAK 3c7a90563f65e8afc9ebfac9b753c698"
 ////                ]
 //
 //                request.setValue("KakaoAK 3c7a90563f65e8afc9ebfac9b753c698", forHTTPHeaderField: "Authorization")
-//                
-//            
-//                
+//
+//
+//
 ////            }
-//            
+//
 //            URLSession.shared.dataTask(with: request)
-//            
+//
 //            let task = URLSession.shared.dataTask(with: request) { data, response, error in
 //                if let error = error {
 //                    completion(.failure(error))
@@ -96,7 +98,7 @@ class NetworkManager {
 //                    return
 //                }
 ////                dump(String(data: data, encoding: .utf8))
-//                
+//
 //                do {
 //                    let decoder = JSONDecoder()
 //                    let Data = try decoder.decode(T.self, from: data)
@@ -107,7 +109,7 @@ class NetworkManager {
 //            }
 //            task.resume()
 //        }
-    
-    
-    
+
+
+
 
