@@ -21,25 +21,43 @@ class WeatherViewModel {
     
     //MARK: - 날씨 가져오기
     func fetchWeather() {
-        let key = "9ac664b5f66b54917a75e04977cbbea0"
-        let urlString = "https://api.openweathermap.org/data/2.5/forecast?q=Seoul&appid=\(key)"
+        
+        let endpoint = Endpoint(
+            baseURL: "https://api.openweathermap.org",
+            path: "/v2/local/search/address",
+            queryParameters: [
+                "q": "“Seoul”",
+                "appid": "9ac664b5f66b54917a75e04977cbbea0"
+            ]
+        )
+        
         
         //networkmanager을 통해 데이터가져오기
-        network.fetchData(urlString: urlString, querys: nil) { [weak self] (result: Result<Welcome, Error>) in
-            //network 요청결과 처리
-            switch result {
-            case .success(let weatherData):
+        network.fetch(endpoint: endpoint)
+            .subscribe(onSuccess: { [weak self] (result: Result<Welcome, Error>) in
                 print("+++called SUCCESS WeatherViewmodel+++")
-                DispatchQueue.main.async {
-                    let weatherList = weatherData.list
-                    let weatherCity = weatherData.city
-                    self?.weatherDataSubject.onNext(weatherList)
-                    self?.weatherCitySubject.onNext(weatherCity)
-                }
-            case .failure(let error):
+                
+            }, onFailure: { [weak self] error in
                 print("called ERROR Weater Viewmodel: \(error)")
-            }
-        }
+            }).disposed(by: disposeBag)
+                        
+                        
+        
+//        network.fetch(endpoint: endpoint) { [weak self] (result: Result<Welcome, Error>) in
+//            //network 요청결과 처리
+//            switch result {
+//            case .success(let weatherData):
+//                print("+++called SUCCESS WeatherViewmodel+++")
+//                DispatchQueue.main.async {
+//                    let weatherList = weatherData.list
+//                    let weatherCity = weatherData.city
+//                    self?.weatherDataSubject.onNext(weatherList)
+//                    self?.weatherCitySubject.onNext(weatherCity)
+//                }
+//            case .failure(let error):
+//                print("called ERROR Weater Viewmodel: \(error)")
+//            }
+//        }
     }
     
 }
