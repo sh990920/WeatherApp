@@ -20,63 +20,56 @@ enum HTTPMethodType: String {
     case delete = "DELETE"
 }
 
-final class Endpoint{
+final class Endpoint {
     let baseURL: String
     let method: HTTPMethodType
-    let headerParpmeters: [String: String]
+    let headerParameters: [String: String]
     let path: String
-    let queryParameters: [String: Any]
-    
+    let queryParameters: [String: String]
     
     init(baseURL: String = "",
          method: HTTPMethodType = .get,
-         headerParpmeters: [String : String] = [:],
+         headerParameters: [String : String] = [:],
          path: String = "",
-         queryParameters: [String : Any] = [:]
+         queryParameters: [String : String] = [:]
     ) {
         self.baseURL = baseURL
         self.method = method
-        self.headerParpmeters = headerParpmeters
+        self.headerParameters = headerParameters
         self.path = path
         self.queryParameters = queryParameters
     }
     
-    
-    func creatURL() -> URL? {
+    func createURL() -> URL? {
         var urlComponents = URLComponents(string: baseURL.appending(path))
-        print("creatURL() urlComponents: \(urlComponents) ")
         
-        
-        var queryItems = [URLQueryItem]() // name, value 속성 있음
-        
+        var queryItems = [URLQueryItem]()
         
         queryParameters.forEach {
-            print("여기에 들어왔음?????")
             queryItems.append(URLQueryItem(name: $0.key, value: "\($0.value)"))
-            print("URLQueryItem(name: $0.name, value: $0.value): \(queryItems)")
+            print(queryItems)
         }
-        
-        print("creatURL() queryItems: \(queryItems)")
-        
         urlComponents?.queryItems = queryItems
+        
+
         
         return urlComponents?.url
         
     }
     
-    func creatEndpoint() throws -> URLRequest {   //여기서 throws 사용하는 이유?
-        guard let url = creatURL() else {throw NetworkError.invalidUrl}
+    func createEndpoint() throws -> URLRequest {
+        guard let url = createURL() else { throw NetworkError.invalidUrl }
+        print("createEndpoint() -> url:\(url)")
         
         var request = URLRequest(url: url)
         request.httpMethod = method.rawValue
         
-        var allHeaders: [String: String] = [:]
-        headerParpmeters.forEach {
-            allHeaders.updateValue($1, forKey: $0)
-        }
+        
+        print("encodedUrl \(url)")
+        
+        // 직접 헤더 추가
+        request.allHTTPHeaderFields = headerParameters
+        
         return request
     }
-    
 }
-
-
