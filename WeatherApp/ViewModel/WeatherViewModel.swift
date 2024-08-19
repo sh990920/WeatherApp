@@ -21,27 +21,44 @@ class WeatherViewModel {
     
     //MARK: - 날씨 가져오기
     func fetchWeather() {
-        let key = "9ac664b5f66b54917a75e04977cbbea0"
-        guard let url = URL(string: "https://api.openweathermap.org/data/2.5/forecast?q=Seoul&appid=\(key)") else {
-            return
-        }
         
-        //networkmanager을 통해 데이터가져오기
-        network.fetchData(url: url) { [weak self] (result: Result<Welcome, Error>) in
-            //network 요청결과 처리
-            switch result {
-            case .success(let weatherData):
+        let endpoint = Endpoint(
+            baseURL: "https://api.openweathermap.org",
+            path: "/data/2.5/forecast",
+            queryParameters: [
+                "lat": "37",
+                "lon": "126",
+                "appid": "9ac664b5f66b54917a75e04977cbbea0"
+            ]
+        )
+        
+        
+//        networkmanager을 통해 데이터가져오기
+        network.fetch(endpoint: endpoint)
+            .subscribe(onSuccess: { [weak self] (result: Welcome) in
                 print("+++called SUCCESS WeatherViewmodel+++")
-                DispatchQueue.main.async {
-                    let weatherList = weatherData.list
-                    let weatherCity = weatherData.city
-                    self?.weatherDataSubject.onNext(weatherList)
-                    self?.weatherCitySubject.onNext(weatherCity)
-                }
-            case .failure(let error):
+                self!.weatherDataSubject.onNext(result.list)
+            }, onFailure: { [weak self] error in
                 print("called ERROR Weater Viewmodel: \(error)")
-            }
-        }
+            }).disposed(by: disposeBag)
+                        
+                        
+        
+//        network.fetch(endpoint: endpoint) { [weak self] (result: Result<Welcome, Error>) in
+//            //network 요청결과 처리
+//            switch result {
+//            case .success(let weatherData):
+//                print("+++called SUCCESS WeatherViewmodel+++")
+//                DispatchQueue.main.async {
+//                    let weatherList = weatherData.list
+//                    let weatherCity = weatherData.city
+//                    self?.weatherDataSubject.onNext(weatherList)
+//                    self?.weatherCitySubject.onNext(weatherCity)
+//                }
+//            case .failure(let error):
+//                print("called ERROR Weater Viewmodel: \(error)")
+//            }
+//        }
     }
     
 }
