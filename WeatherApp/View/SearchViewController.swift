@@ -45,8 +45,7 @@ class SearchViewController: UIViewController, UICollectionViewDelegateFlowLayout
         weatherVM.fetchWeather()
         
         //지현 추가
-        print("좌표 확인 중")
-//        searchVM.fetchLocation()
+        searchVM.fetchLocation()
     }
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.view.endEditing(true)

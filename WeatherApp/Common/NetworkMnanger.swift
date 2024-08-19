@@ -33,6 +33,9 @@ class NetworkMnanger {
                     guard let data = data,
                           let response = response as? HTTPURLResponse,
                           (200..<300).contains(response.statusCode) else {
+                        if let data = data {
+                            print(data)
+                        }
                         observer(.failure(NSError(domain: "데이터 에러", code: -1, userInfo: nil)))
                         return
                     }

@@ -7,7 +7,7 @@
 
 import UIKit
 import RxSwift
-import RxCocoa
+//import RxCocoa
 // MainView에서 사용하면 좋을것 같습니다
 class WeatherViewModel {
     
@@ -41,24 +41,7 @@ class WeatherViewModel {
             }, onFailure: { [weak self] error in
                 print("called ERROR Weater Viewmodel: \(error)")
             }).disposed(by: disposeBag)
-                        
-                        
         
-//        network.fetch(endpoint: endpoint) { [weak self] (result: Result<Welcome, Error>) in
-//            //network 요청결과 처리
-//            switch result {
-//            case .success(let weatherData):
-//                print("+++called SUCCESS WeatherViewmodel+++")
-//                DispatchQueue.main.async {
-//                    let weatherList = weatherData.list
-//                    let weatherCity = weatherData.city
-//                    self?.weatherDataSubject.onNext(weatherList)
-//                    self?.weatherCitySubject.onNext(weatherCity)
-//                }
-//            case .failure(let error):
-//                print("called ERROR Weater Viewmodel: \(error)")
-//            }
-//        }
     }
     
 }
