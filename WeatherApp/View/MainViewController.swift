@@ -20,6 +20,7 @@ class MainViewController: UIViewController {
         super.viewDidLoad()
         configureUI()
         configureTableView()
+        configureCollectionView()
     }
     
     private func configureUI() {
@@ -30,7 +31,37 @@ class MainViewController: UIViewController {
         mainView.tableView.dataSource = self
         mainView.tableView.delegate = self
     }
+    
+    private func configureCollectionView() {
+        mainView.collectionView.dataSource = self
+        mainView.collectionView.delegate = self
+        mainView.collectionView.register(MainCollectionViewCell.self, forCellWithReuseIdentifier: "MainCollectionViewCell")
+    }
 }
+
+// MARK: - UICollectionViewDataSource, UICollectViewDelegate
+extension MainViewController: UICollectionViewDataSource, UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 5
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MainCollectionViewCell", for: indexPath) as? MainCollectionViewCell else {
+            return UICollectionViewCell()
+        }
+        
+        // 임시 더미데이터
+        let times = ["현재", "오전 12시", "오후 3시", "오후 6시", "오후 9시"]
+        let temperatures = ["32","35","28","30","31"]
+        let weatgerIcons = ["","","","",""] // 아이콘 찾아올게...
+        
+        cell.configure(time: times[indexPath.row], temperature: temperatures[indexPath.row], wetherIconName: weatgerIcons[indexPath.row])
+        
+        return cell
+    }
+
+}
+
 
 // MARK: - UITableViewDataSource, UITableViewDelegate
 
