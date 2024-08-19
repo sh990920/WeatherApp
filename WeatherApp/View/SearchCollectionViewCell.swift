@@ -104,11 +104,50 @@ class SearchCollectionViewCell: UICollectionViewCell {
         firstStackView.addArrangedSubview(locationLabel)
         firstStackView.addArrangedSubview(timeLabel)
         //득령 추가
+        if let formattedDateTime = formatDateTime(weather.dtTxt) {
+            timeLabel.text = formattedDateTime
+        } else {
+            timeLabel.text = weather.dtTxt
+        }
         tempLabel.text = "\(Int(weather.main.temp - 273.15))°C"
         maxTempLabel.text = "\(Int(weather.main.tempMax - 273.15))°C"
         minTempLable.text = "\(Int(weather.main.tempMin - 273.15))°C"
- 
+
     }
     
-    
+    private func formatDateTime(_ dateTimeString: String) -> String? {
+        // 원본 날짜 형식 설정
+        let inputFormatter = DateFormatter()
+        inputFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        
+        // 원본 문자열을 Date 객체로 변환
+        guard let date = inputFormatter.date(from: dateTimeString) else {
+            return nil
+        }
+        
+        // 현재 날짜 가져오기
+        let currentDate = Date()
+        
+        // Calendar 객체를 사용해 연, 월, 일 비교
+        let calendar = Calendar.current
+        let componentsDate = calendar.dateComponents([.year, .month, .day], from: date)
+        let componentsCurrentDate = calendar.dateComponents([.year, .month, .day], from: currentDate)
+        
+        let outputFormatter = DateFormatter()
+        
+        // 연, 월, 일이 같은 경우 특정 포맷 사용
+        if componentsDate.year == componentsCurrentDate.year &&
+            componentsDate.month == componentsCurrentDate.month &&
+            componentsDate.day == componentsCurrentDate.day {
+            // 같은 날일 경우 시간만 표시
+            outputFormatter.dateFormat = "HH시"
+        } else {
+            // 다른 날일 경우 월-일 시:분 표시
+            outputFormatter.dateFormat = "dd일 HH시"
+        }
+        
+        // Date 객체를 원하는 형식의 문자열로 변환
+        let formattedString = outputFormatter.string(from: date)
+        return formattedString
+    }
 }
