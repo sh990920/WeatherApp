@@ -21,12 +21,10 @@ class WeatherViewModel {
     //MARK: - 날씨 가져오기
     func fetchWeather() {
         let key = "9ac664b5f66b54917a75e04977cbbea0"
-        guard let url = URL(string: "https://api.openweathermap.org/data/2.5/forecast?q=Seoul&appid=\(key)") else {
-            return
-        }
+        let urlString = "https://api.openweathermap.org/data/2.5/forecast?q=Seoul&appid=\(key)"
         
         //networkmanager을 통해 데이터가져오기
-        network.fetchData(url: url) { [weak self] (result: Result<Welcome, Error>) in
+        network.fetchData(urlString: urlString, querys: nil) { [weak self] (result: Result<Welcome, Error>) in
             //network 요청결과 처리
             switch result {
             case .success(let weatherData):

@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import UIKit
 
 class NetworkMnanger {
     
@@ -14,19 +13,34 @@ class NetworkMnanger {
     private init () {}
     
     func fetchData<T: Decodable>(
-        url: URL,
-//        header: [String: String]?,
-//        querys: [URLQueryItem]?,
-//        method: String?,
+        urlString: String?,
+        querys: URLQueryItem?,
         completion: @escaping (Result<T, Error>) -> Void) {
             
+            // URL 유효성 검사
+            guard let urlString,
+                  var components = URLComponents(string: urlString) else { return }
+            guard let url = components.url else { return }
+            
             //URLRequest 생성
-//            guard let url = url else { return }
-//            var request = URLRequest(url: url)
-//            let headers = ["Authorization": "KakaoAK 3c7a90563f65e8afc9ebfac9b753c698"]
+            var request = URLRequest(url: url)
             
+//            if querys != nil {
+                let safeQuerys = querys
+                
+//                let headers: [String: String]? = [
+//                    "Authorization": "KakaoAK 3c7a90563f65e8afc9ebfac9b753c698"
+//                ]
+
+                request.setValue("KakaoAK 3c7a90563f65e8afc9ebfac9b753c698", forHTTPHeaderField: "Authorization")
+                
             
-            let task = URLSession.shared.dataTask(with: url) { data, response, error in
+                
+//            }
+            
+            URLSession.shared.dataTask(with: request)
+            
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
                 if let error = error {
                     completion(.failure(error))
                     return
@@ -35,11 +49,12 @@ class NetworkMnanger {
                     completion(.failure(NSError(domain: "데이터 에러", code: -1, userInfo: nil)))
                     return
                 }
+//                dump(String(data: data, encoding: .utf8))
                 
                 do {
                     let decoder = JSONDecoder()
-                    let weatherData = try decoder.decode(T.self, from: data)
-                    completion(.success(weatherData))
+                    let Data = try decoder.decode(T.self, from: data)
+                    completion(.success(Data))
                 } catch {
                     completion(.failure(error))
                 }
