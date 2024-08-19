@@ -42,7 +42,7 @@ class SearchViewController: UIViewController, UICollectionViewDelegateFlowLayout
         //득령추가
         print("called SearchVC")
         bindViewModel()
-//        weatherVM.fetchWeather()
+        weatherVM.fetchWeather()
         
         //지현 추가
         print("좌표 확인 중")

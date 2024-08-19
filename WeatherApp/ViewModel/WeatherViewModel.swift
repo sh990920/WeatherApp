@@ -24,9 +24,10 @@ class WeatherViewModel {
         
         let endpoint = Endpoint(
             baseURL: "https://api.openweathermap.org",
-            path: "/v2/local/search/address",
+            path: "/data/2.5/forecast",
             queryParameters: [
-                "q": "“Seoul”",
+                "lat": "37",
+                "lon": "126",
                 "appid": "9ac664b5f66b54917a75e04977cbbea0"
             ]
         )
