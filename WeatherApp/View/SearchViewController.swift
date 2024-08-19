@@ -26,6 +26,7 @@ class SearchViewController: UIViewController, UICollectionViewDelegateFlowLayout
 
     
     let weatherVM = WeatherViewModel()
+    let searchVM = SearchViewModel()
     
     override func loadView() {
         searchView = SearchView(frame: UIScreen.main.bounds)
@@ -42,6 +43,10 @@ class SearchViewController: UIViewController, UICollectionViewDelegateFlowLayout
         print("called SearchVC")
         bindViewModel()
         weatherVM.fetchWeather()
+        
+        //지현 추가
+        print("좌표 확인 중")
+//        searchVM.fetchLocation()
     }
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.view.endEditing(true)
