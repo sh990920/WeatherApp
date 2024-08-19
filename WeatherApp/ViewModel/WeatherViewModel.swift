@@ -34,7 +34,7 @@ class WeatherViewModel {
         
         //networkmanager을 통해 데이터가져오기
         network.fetch(endpoint: endpoint)
-            .subscribe(onSuccess: { [weak self] (result: Result<Welcome, Error>) in
+            .subscribe(onSuccess: { [weak self] (result: Welcome) in
                 print("+++called SUCCESS WeatherViewmodel+++")
                 
             }, onFailure: { [weak self] error in

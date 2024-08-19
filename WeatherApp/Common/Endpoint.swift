@@ -7,6 +7,12 @@
 
 import Foundation
 
+enum NetworkError: Error {
+    case invalidUrl
+    case dataFetchFail
+    case decodingFail
+}
+
 enum HTTPMethodType: String {
     case post = "POST"
     case get = "GET"
