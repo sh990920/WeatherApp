@@ -33,11 +33,11 @@ class WeatherViewModel {
         )
         
         
-        //networkmanager을 통해 데이터가져오기
+//        networkmanager을 통해 데이터가져오기
         network.fetch(endpoint: endpoint)
             .subscribe(onSuccess: { [weak self] (result: Welcome) in
                 print("+++called SUCCESS WeatherViewmodel+++")
-                
+                self!.weatherDataSubject.onNext(result.list)
             }, onFailure: { [weak self] error in
                 print("called ERROR Weater Viewmodel: \(error)")
             }).disposed(by: disposeBag)
