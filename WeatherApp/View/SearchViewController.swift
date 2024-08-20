@@ -19,6 +19,51 @@ class SearchViewController: UIViewController, UICollectionViewDelegateFlowLayout
         }
     }
     
+    private var regionsList: [String] = [] {
+        didSet {
+            print("위치 정보 추가")
+            searchVM.fetchAllLocations(querys: regionsList)
+        }
+    }
+    
+    private func regionsSetting() {
+        UserDefaultManager.shared.regions.observe(on: MainScheduler.instance).subscribe(onNext: { [weak self] regions in
+            self?.regionsList = regions
+        }, onError: { error in
+            print("데이터추가 실패")
+        }).disposed(by: disposeBag)
+    }
+    
+    private var locationInfoList: [LocationInfo] = [] {
+        didSet {
+            print("좌표 정보 추가")
+            weatherVM.fetchWeatherList(locations: locationInfoList)
+        }
+    }
+    
+    private func locationSetting() {
+        searchVM.locationListSubject.observe(on: MainScheduler.instance).subscribe(onNext: { [weak self] list in
+            self?.locationInfoList = list
+        }, onError: { error in
+            print("데이터추가 실패")
+        }).disposed(by: disposeBag)
+    }
+    
+    private var weatherList: [WeatherResponse] = [] {
+        didSet {
+            print("날씨 정보 추가")
+            // UI 수정 바로 하면 끝
+        }
+    }
+    
+    private func weatherSetting() {
+        weatherVM.weatherListSubject.observe(on: MainScheduler.instance).subscribe(onNext: { [weak self] list in
+            self?.weatherList = list
+        }, onError: { error in
+            print("데이터 추가 실패")
+        }).disposed(by: disposeBag)
+    }
+    
     private var latitude = ""
     private var longitude = ""
     private var currentLocationLabel = ""
@@ -52,12 +97,15 @@ class SearchViewController: UIViewController, UICollectionViewDelegateFlowLayout
     override func viewDidLoad() {
         super.viewDidLoad()
         searchView.collectionView.delegate = self
-        //        searchView.collectionView.dataSource = self
         searchView.collectionView.register(SearchCollectionViewCell.self, forCellWithReuseIdentifier: "WeatherCollectionViewCell")
         searchView.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         bindSearchBar()
         bindTableView()
+        bindViewModel()
         dataSetting()
+        regionsSetting()
+        locationSetting()
+        weatherSetting()
     }
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.view.endEditing(true)
@@ -103,20 +151,26 @@ class SearchViewController: UIViewController, UICollectionViewDelegateFlowLayout
                 }
             }).disposed(by: disposeBag)
         
-        searchView.searchBar.rx.text.orEmpty
+            searchView.searchBar.rx.text.orEmpty
             .debounce(.milliseconds(300), scheduler: MainScheduler.instance)
             .distinctUntilChanged()
             .subscribe(onNext: { [unowned self] query in
-                // 검색어에 상관없이 항상 모든 데이터를 보여줍니다.
                 if query.isEmpty {
-                    // 검색어가 비어 있으면 전체 데이터를 표시
-                    updateFilteredRegions()
+                    // 검색어가 비어 있으면 전체 데이터를 표시 (컬렉션 뷰)
+                    //self.searchView.showCollectionView()
+                    self.searchView.hideTableView()
+                    self.updateFilteredRegions() // 이 함수에서 기존의 데이터를 filteredRegions에 설정
+                } else {
+                    // 검색어가 있을 때는 검색 결과 표시 (테이블 뷰)
+                    self.searchView.showTableView()
+                    self.searchVM.fetchLocation(query: query)
                 }
             }).disposed(by: disposeBag)
         
         searchView.cancelButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 self?.searchView.searchBar.resignFirstResponder()
+                self?.searchView.hideTableView()
             }).disposed(by: disposeBag)
     }
     
@@ -130,7 +184,7 @@ class SearchViewController: UIViewController, UICollectionViewDelegateFlowLayout
             .subscribe(onNext: { [weak self] indexPath in
                 let viewController = AddRegionViewController()
                 if let self = self {
-                    viewController.dataSetting(data: self.filteredRegions.value[indexPath.item])
+                    viewController.dataSetting(data: self.filteredRegions.value[indexPath.item], isSaved: false)
                 }
                 let addRegionVC = UINavigationController(rootViewController: viewController)
                 addRegionVC.modalPresentationStyle = .pageSheet
@@ -139,20 +193,35 @@ class SearchViewController: UIViewController, UICollectionViewDelegateFlowLayout
     }
     
     private func bindViewModel() {
-        weatherVM.weatherDataSubject
+        weatherVM.weatherListSubject
             .observe(on: MainScheduler.instance)
             .bind(to: searchView.collectionView.rx.items(
                 cellIdentifier: SearchCollectionViewCell.reuseIdentifier,
-                cellType: SearchCollectionViewCell.self)) { row, weatherItem, cell in
-                    cell.configureStackViewUI(with: weatherItem, currentLocationLabel: self.currentLocationLabel)
+                cellType: SearchCollectionViewCell.self)) { (row, weatherItem, cell) in
+                    cell.configureStackView(data: weatherItem, location: self.locationInfoList[row].documents[0].addressName)
                 }
                 .disposed(by: disposeBag)
+        
+        searchView.collectionView.rx.itemSelected
+            .subscribe(onNext: { [weak self] indexPath in
+                let viewController = AddRegionViewController()
+                if let self = self {
+                    viewController.dataSetting(data: self.locationInfoList[indexPath.item].documents[0], isSaved: true)
+                }
+                let addRegionVC = UINavigationController(rootViewController: viewController)
+                addRegionVC.modalPresentationStyle = .pageSheet
+                self?.present(addRegionVC, animated: true, completion: nil)
+            }).disposed(by: disposeBag)
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         guard let query = searchBar.text else { return }
         print("Searching for: \(query)")
         searchVM.fetchLocation(query: query)
+        
+        // 검색 버튼 클릭 시에도 테이블 뷰를 보여줌
+        searchView.showTableView()
+//        searchView.hideCollectionView()
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {

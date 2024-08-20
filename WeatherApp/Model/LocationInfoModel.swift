@@ -23,3 +23,27 @@ struct Document: Codable {
         case x, y
     }
 }
+
+struct AddressInfo: Codable {
+    let documents: [AddressDocument]
+}
+
+struct AddressDocument: Codable {
+    let roadAddress: RoadAddress
+    
+    enum CodingKeys: String, CodingKey {
+        case roadAddress = "road_address"
+    }
+}
+
+struct RoadAddress: Codable {
+    let region1depthName: String
+    let region2depthName: String
+    
+    enum CodingKeys: String, CodingKey {
+        case region1depthName = "region_1depth_name"
+        case region2depthName = "region_2depth_name"
+    }
+    
+    
+}

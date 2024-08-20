@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>현재위치를 사용하기 위한 권한</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>백그라운드에서 사용하기 위한 권한</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
