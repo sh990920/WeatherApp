@@ -59,9 +59,10 @@ class SearchViewController: UIViewController, UICollectionViewDelegateFlowLayout
         NotificationCenter.default.rx.notification(UIResponder.keyboardWillShowNotification)
             .subscribe(onNext: { [weak self] _ in
                 UIView.animate(withDuration: 0.3) {
-                    self?.view.frame.origin.y = -70
+                    self?.view.frame.origin.y = -50
                     self?.searchView.hideTitle()
                     self?.searchView.showTableView()
+                    self?.searchView.showButton()
                 }
             }).disposed(by: disposeBag)
         
@@ -71,6 +72,7 @@ class SearchViewController: UIViewController, UICollectionViewDelegateFlowLayout
                     self?.view.frame.origin.y = 0
                     self?.searchView.showTitle()
                     self?.searchView.hideTableView()
+                    self?.searchView.hideButton()
                 }
             }).disposed(by: disposeBag)
         
@@ -88,6 +90,11 @@ class SearchViewController: UIViewController, UICollectionViewDelegateFlowLayout
                 }
             }.bind(to: filteredRegions)
             .disposed(by: disposeBag)
+        
+        searchView.cancelButton.rx.tap
+            .subscribe(onNext: { [weak self] in
+                self?.searchView.searchBar.resignFirstResponder()
+            }).disposed(by: disposeBag)
     }
     
     private func bindTableView() {

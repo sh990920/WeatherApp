@@ -24,11 +24,26 @@ class SearchView: UIView {
         return searchBar
     }()
     
+    let cancelButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("취소", for: .normal)
+        button.isHidden = true
+        return button
+    }()
+    
+    let searchStackView: UIStackView = {
+        let stackview = UIStackView()
+        stackview.axis = .horizontal
+        stackview.spacing = 5
+        return stackview
+    }()
+    
     lazy var tableView: UITableView = {
         let tableView = UITableView()
         tableView.isHidden = true
         return tableView
     }()
+    
     
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -48,10 +63,18 @@ class SearchView: UIView {
         self.backgroundColor = .white
         configureUI()
         setConstraints()
+        
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func hideButton() {
+        cancelButton.isHidden = true
+    }
+    func showButton() {
+        cancelButton.isHidden = false
     }
     
     func hideTableView() {
@@ -70,20 +93,24 @@ class SearchView: UIView {
     private func configureUI() {
         [
             titleLabel,
-            searchBar,
             collectionView,
-            tableView
+            tableView,
+            searchStackView
         ].forEach { addSubview($0) }
+        [
+            searchBar,
+            cancelButton
+        ].forEach { searchStackView.addArrangedSubview($0)}
         
     }
     private func setConstraints() {
-        searchBar.snp.makeConstraints {
+        searchStackView.snp.makeConstraints {
             $0.top.equalTo(safeAreaLayoutGuide.snp.top).offset(30)
-            $0.leading.trailing.equalTo(titleLabel)
+            $0.leading.trailing.equalToSuperview().inset(20)
         }
-        
+
         titleLabel.snp.makeConstraints {
-            $0.bottom.equalTo(searchBar.snp.top).offset(10)
+            $0.bottom.equalTo(searchBar.snp.top)
             $0.leading.trailing.equalToSuperview().inset(30)
             $0.height.equalTo(50)
         }
