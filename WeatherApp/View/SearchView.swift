@@ -9,18 +9,25 @@ import UIKit
 import SnapKit
 
 class SearchView: UIView {
-    private let searchBar: UISearchBar = {
+
+    private let titleLabel: UILabel = {
+        let label = UILabel()
+        label.text = "날씨"
+        label.font = .boldSystemFont(ofSize: 40)
+        return label
+    }()
+    
+    let searchBar: UISearchBar = {
         let searchBar = UISearchBar()
         searchBar.placeholder = "도시 또는 위치 검색"
         searchBar.backgroundImage = UIImage()
         return searchBar
     }()
     
-    private let titleLabel: UILabel = {
-        let label = UILabel()
-        label.text = "날씨"
-        label.font = .boldSystemFont(ofSize: 40)
-        return label
+    lazy var tableView: UITableView = {
+        let tableView = UITableView()
+        tableView.isHidden = true
+        return tableView
     }()
     
     lazy var collectionView: UICollectionView = {
@@ -47,6 +54,12 @@ class SearchView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func hideTableView() {
+        tableView.isHidden = true
+    }
+    func showTableView() {
+        tableView.isHidden = false
+    }
     func hideTitle() {
         titleLabel.isHidden = true
     }
@@ -58,7 +71,8 @@ class SearchView: UIView {
         [
             titleLabel,
             searchBar,
-            collectionView
+            collectionView,
+            tableView
         ].forEach { addSubview($0) }
         
     }
@@ -78,6 +92,11 @@ class SearchView: UIView {
             $0.top.equalTo(searchBar.snp.bottom).offset(10)
             $0.leading.trailing.equalToSuperview().inset(30)
             $0.bottom.equalTo(safeAreaLayoutGuide.snp.bottom)
+        }
+        
+        tableView.snp.makeConstraints {
+            $0.top.equalTo(searchBar.snp.bottom).offset(10)
+            $0.leading.trailing.bottom.equalToSuperview()
         }
     }
 }
