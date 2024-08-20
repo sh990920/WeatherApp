@@ -36,6 +36,8 @@ class MainTableViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
+        self.backgroundColor = .clear
+        
         [dayLabel, weatherIcon, temperatureLabel].forEach {
             contentView.addSubview($0)
         }

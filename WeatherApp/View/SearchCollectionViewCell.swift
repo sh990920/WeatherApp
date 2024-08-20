@@ -60,6 +60,14 @@ class SearchCollectionViewCell: UICollectionViewCell {
         return label
     }()
     
+    private let view: UIView = {
+        let view = UIImageView()
+        view.image = UIImage(named: "rain")
+        view.layer.cornerRadius = 10
+        view.layer.masksToBounds = true
+        return view
+    }()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         configureUI()
@@ -70,13 +78,15 @@ class SearchCollectionViewCell: UICollectionViewCell {
     }
     
     private func configureUI() {
-        contentView.layer.cornerRadius = 10
-        contentView.backgroundColor = .blue
-        //        configureStackViewUI(with: List)
-        contentView.addSubview(firstStackView)
-        contentView.addSubview(tempLabel)
-        contentView.addSubview(maxTempLabel)
-        contentView.addSubview(minTempLable)
+        contentView.addSubview(view)
+        
+        [firstStackView, tempLabel, maxTempLabel, minTempLable].forEach {
+            view.addSubview($0)
+        }
+        
+        view.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
         
         firstStackView.snp.makeConstraints {
             $0.top.equalToSuperview().offset(10)
@@ -110,8 +120,8 @@ class SearchCollectionViewCell: UICollectionViewCell {
             timeLabel.text = weather.dtTxt
         }
         tempLabel.text = "\(Int(weather.main.temp - 273.15))°C"
-        maxTempLabel.text = "\(Int(weather.main.tempMax - 273.15))°C"
-        minTempLable.text = "\(Int(weather.main.tempMin - 273.15))°C"
+        maxTempLabel.text = "최고 : \(Int(weather.main.tempMax - 273.15))°C"
+        minTempLable.text = "최저 : \(Int(weather.main.tempMin - 273.15))°C"
 
     }
     

@@ -9,6 +9,10 @@ import UIKit
 import SnapKit
 
 class MainView: UIView {
+
+    // MARK: - 스크롤뷰
+        let scrollView = UIScrollView()
+        let contentView = UIView()
     
     // MARK: - 레이블 폰트 설정 - DS
     private let systemFontLabel: (String, CGFloat, UIColor) -> UILabel = { text, fontSize, textColor in
@@ -75,6 +79,19 @@ class MainView: UIView {
         return tableView
     }()
     
+    // MARK: - 컬렉션 뷰
+    let collectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        layout.itemSize = CGSize(width: 100, height: 100)
+        layout.minimumLineSpacing = 10
+        
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.backgroundColor = UIColor.darkGray.withAlphaComponent(0.7)
+        collectionView.layer.cornerRadius = 10
+        return collectionView
+    }()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -87,8 +104,10 @@ class MainView: UIView {
     
     private func setupUI() {
         backgroundLayout()
+        setupScrollViewLayout()
         setupTopViewLayout()
         setupMidViewLayout()
+        setupCollectionViewLayout()
         setupTableViewLayout()
     }
     
@@ -98,39 +117,55 @@ class MainView: UIView {
         configureTableViewHeader()
     }
     
+    // MARK: - 스크롤뷰 레이아웃 설정
+    private func setupScrollViewLayout() {
+        self.addSubview(scrollView)
+        scrollView.addSubview(contentView)
+        
+        scrollView.snp.makeConstraints {
+            $0.top.leading.trailing.equalToSuperview()
+            $0.bottom.equalToSuperview().inset(84)
+        }
+        
+        contentView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+            $0.width.equalToSuperview()
+        }
+    }
+    
     // MARK: - 백그라운드 이미지 뷰 레이아웃
     private func backgroundLayout() {
         // 백그라운드 이미지뷰를 메인 뷰에 추가
         self.addSubview(backgroundImageView)
         
         // 다른 뷰들을 추가하기 전에 백그라운드 이미지 뷰를 뒤에 배치
-        [backgroundImageView, topView, midView].forEach {
-            self.addSubview($0)
+        [topView, midView].forEach {
+            contentView.addSubview($0)
         }
         
         // backgroundImageView 제약 조건 설정
-        backgroundImageView.snp.makeConstraints { make in
-            make.edges.equalToSuperview() // 슈퍼뷰(메인 뷰)에 맞추기
+        backgroundImageView.snp.makeConstraints {
+            $0.edges.equalToSuperview() // 슈퍼뷰(메인 뷰)에 맞추기
         }
     }
     
     // MARK: - 상단, 중간 뷰 레이아웃
     private func setupTopViewLayout() {
         [topView, midView].forEach {
-            self.addSubview($0)
+            contentView.addSubview($0)
         }
         
         // 상단 섹션 뷰
         topView.snp.makeConstraints {
-            $0.top.equalToSuperview()
+            $0.top.equalToSuperview().offset(20)
             $0.leading.equalToSuperview().offset(20)
             $0.trailing.equalToSuperview().offset(-20)
-            $0.height.equalTo(self).multipliedBy(0.3)
+            $0.height.equalTo(216)
         }
         
         // 중단 섹션 뷰
         midView.snp.makeConstraints {
-            $0.top.equalTo(topView.snp.bottom).offset(16)
+            $0.top.equalTo(topView.snp.bottom).offset(20)
             $0.leading.equalToSuperview().offset(20)
             $0.trailing.equalToSuperview().offset(-20)
             $0.height.equalTo(152)
@@ -167,12 +202,24 @@ class MainView: UIView {
     
     // MARK: - 테이블 뷰 레이아웃
     private func setupTableViewLayout() {
-        self.addSubview(tableView)
+        contentView.addSubview(tableView)
         
         tableView.snp.makeConstraints {
-            $0.top.equalTo(midView.snp.bottom).offset(20)
+            $0.top.equalTo(collectionView.snp.bottom).offset(20)
             $0.leading.trailing.equalToSuperview().inset(20)
             $0.height.equalTo(279)
+            $0.bottom.equalToSuperview().offset(-30)
+        }
+    }
+    
+    // MARK: - 컬렉션 뷰 레이아웃
+    private func setupCollectionViewLayout() {
+        contentView.addSubview(collectionView)
+        
+        collectionView.snp.makeConstraints {
+            $0.top.equalTo(midView.snp.bottom).offset(20)
+            $0.leading.trailing.equalToSuperview().inset(20)
+            $0.height.equalTo(120)
         }
     }
     
@@ -183,27 +230,24 @@ class MainView: UIView {
         }
         
         locationLabel.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(88)
+            $0.top.equalToSuperview()
             $0.centerX.equalToSuperview()
-            $0.height.greaterThanOrEqualTo(32)
         }
         
         locationDetailLabel.snp.makeConstraints {
             $0.top.equalTo(locationLabel.snp.bottom).offset(8)
             $0.centerX.equalToSuperview()
-            $0.height.greaterThanOrEqualTo(16)
         }
         
         temperatureLabel.snp.makeConstraints {
             $0.top.equalTo(locationDetailLabel.snp.bottom).offset(8)
             $0.centerX.equalToSuperview()
-            $0.height.greaterThanOrEqualTo(48)
         }
         
         descriptionLabel.snp.makeConstraints {
             $0.top.equalTo(temperatureLabel.snp.bottom).offset(8)
             $0.centerX.equalToSuperview()
-            $0.height.greaterThanOrEqualTo(16)
+            $0.bottom.equalToSuperview().offset(-24)
         }
     }
     
@@ -214,15 +258,14 @@ class MainView: UIView {
         }
         
         humidityLabel.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(8)
-            $0.leading.equalToSuperview().offset(30)
+            $0.bottom.equalTo(humidityDetailLabel.snp.top).offset(-16)
+            $0.centerX.equalTo(humidityDetailLabel.snp.centerX)
             $0.height.equalTo(16)
         }
         
         humidityDetailLabel.snp.makeConstraints {
-            $0.top.equalTo(humidityLabel.snp.bottom).offset(8)
-            $0.leading.equalTo(humidityLabel.snp.leading)
-            $0.bottom.equalToSuperview().offset(-16)
+            $0.centerX.equalToSuperview()
+            $0.centerY.equalToSuperview().offset(10)
             $0.height.equalTo(48)
         }
         
@@ -287,3 +330,4 @@ class MainView: UIView {
         return headerView
     }
 }
+
