@@ -19,6 +19,11 @@ class SearchViewController: UIViewController, UICollectionViewDelegateFlowLayout
         }
     }
     
+    private var latitude = ""
+    private var longitude = ""
+    private var currentLocationLabel = ""
+    
+    
     var locationText: Observable<String> {
         searchView.searchBar.rx.text.orEmpty.asObservable()
     }
@@ -139,7 +144,7 @@ class SearchViewController: UIViewController, UICollectionViewDelegateFlowLayout
             .bind(to: searchView.collectionView.rx.items(
                 cellIdentifier: SearchCollectionViewCell.reuseIdentifier,
                 cellType: SearchCollectionViewCell.self)) { row, weatherItem, cell in
-                    cell.configureStackViewUI(with: weatherItem)
+                    cell.configureStackViewUI(with: weatherItem, currentLocationLabel: self.currentLocationLabel)
                 }
                 .disposed(by: disposeBag)
     }

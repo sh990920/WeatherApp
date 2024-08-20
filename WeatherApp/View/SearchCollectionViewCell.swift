@@ -110,7 +110,7 @@ class SearchCollectionViewCell: UICollectionViewCell {
         
     }
     
-    func configureStackViewUI(with weather: List) {
+    func configureStackViewUI(with weather: List, currentLocationLabel: String) {
         firstStackView.addArrangedSubview(locationLabel)
         firstStackView.addArrangedSubview(timeLabel)
         //득령 추가
@@ -119,6 +119,7 @@ class SearchCollectionViewCell: UICollectionViewCell {
         } else {
             timeLabel.text = weather.dtTxt
         }
+        locationLabel.text = "\(currentLocationLabel)"
         tempLabel.text = "\(Int(weather.main.temp - 273.15))°C"
         maxTempLabel.text = "최고 : \(Int(weather.main.tempMax - 273.15))°C"
         minTempLable.text = "최저 : \(Int(weather.main.tempMin - 273.15))°C"
