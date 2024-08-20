@@ -20,14 +20,14 @@ class WeatherViewModel {
     let network = NetworkManager.shared
     
     //MARK: - 날씨 가져오기
-    func fetchWeather() {
+    func fetchWeather(y: String, x: String) {
         
         let endpoint = Endpoint(
             baseURL: "https://api.openweathermap.org",
             path: "/data/2.5/forecast",
             queryParameters: [
-                "lat": "37",
-                "lon": "126",
+                "lat": y,
+                "lon": x,
                 "appid": "9ac664b5f66b54917a75e04977cbbea0"
             ]
         )
@@ -41,8 +41,6 @@ class WeatherViewModel {
             }, onFailure: { [weak self] error in
                 print("called ERROR Weater Viewmodel: \(error)")
             }).disposed(by: disposeBag)
-        
     }
-    
-}
 
+}

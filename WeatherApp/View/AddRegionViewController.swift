@@ -13,6 +13,16 @@ import RxCocoa
 class AddRegionViewController: UIViewController {
     
     private let disposeBag = DisposeBag()
+    private let weatherVM = WeatherViewModel()
+    private var weatherList = [List]()
+    
+    var data: Document? = nil {
+        didSet {
+            if let data = data {
+                weatherVM.fetchWeather(y: data.y, x: data.x)
+            }
+        }
+    }
     
     private let addRegionView: MainView = {
         let view = MainView()
@@ -24,6 +34,21 @@ class AddRegionViewController: UIViewController {
         configureUI()
         configureNavigationBar()
         bindButtons()
+        bindWeatherData()
+    }
+    
+    func dataSetting(data: Document) {
+        self.data = data
+    }
+    
+    func bindWeatherData() {
+        weatherVM.weatherDataSubject.observe(on: MainScheduler.instance).subscribe(onNext: { [weak self] list in
+            self?.weatherList = list
+            //일일 데이터로 수정하고 바꿔주세요
+            print(self?.weatherList)
+        }, onError: { error in
+            print("데이터 추가 실패")
+        })
     }
     
     private func bindButtons() {

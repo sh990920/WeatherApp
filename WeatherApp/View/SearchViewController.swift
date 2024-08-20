@@ -10,10 +10,14 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
-class SearchViewController: UIViewController, UICollectionViewDelegateFlowLayout {
+class SearchViewController: UIViewController, UICollectionViewDelegateFlowLayout, UISearchBarDelegate {
     
-    private let regions = Observable.just(["서울특별시", "경기도", "전라도", "강원도"])
-    private let filteredRegions = BehaviorRelay<[String]>(value: [])
+    private let filteredRegions = BehaviorRelay<[Document]>(value: [])
+    private var searchData: LocationInfo? = nil {
+        didSet {
+            updateFilteredRegions()
+        }
+    }
     
     private let disposeBag = DisposeBag()
     private var searchView = SearchView(frame: .zero)
@@ -33,6 +37,7 @@ class SearchViewController: UIViewController, UICollectionViewDelegateFlowLayout
     
     override func loadView() {
         searchView = SearchView(frame: UIScreen.main.bounds)
+        searchView.searchBar.delegate = self
         self.view = searchView
     }
     override func viewDidLoad() {
@@ -43,16 +48,29 @@ class SearchViewController: UIViewController, UICollectionViewDelegateFlowLayout
         searchView.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         bindSearchBar()
         bindTableView()
-        //득령추가
-        print("called SearchVC")
-        bindViewModel()
-        weatherVM.fetchWeather()
-        
-        //지현 추가
-        searchVM.fetchLocation()
+        dataSetting()
     }
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.view.endEditing(true)
+    }
+    
+    private func dataSetting() {
+        searchVM.locationInfoSubject.observe(on: MainScheduler.instance).subscribe(onNext: { [weak self] locationInfo in
+            self?.searchData = locationInfo
+        }, onError: { error in
+            print("데이터 바인딩 실패")
+        }).disposed(by: disposeBag)
+    }
+    
+    private func updateFilteredRegions() {
+        guard let searchData = searchData else {
+            filteredRegions.accept([]) // searchData가 nil일 경우 filteredRegions를 빈 배열로 설정
+            return
+        }
+
+        // searchData에서 regions 목록을 가져와서 filteredRegions에 설정
+        let regions = searchData.documents.map { $0 }
+        filteredRegions.accept(regions)
     }
     
     private func bindSearchBar() {
@@ -79,17 +97,13 @@ class SearchViewController: UIViewController, UICollectionViewDelegateFlowLayout
         searchView.searchBar.rx.text.orEmpty
             .debounce(.milliseconds(300), scheduler: MainScheduler.instance)
             .distinctUntilChanged()
-            .flatMapLatest { [unowned self] query in
+            .subscribe(onNext: { [unowned self] query in
+                // 검색어에 상관없이 항상 모든 데이터를 보여줍니다.
                 if query.isEmpty {
-                    return self.regions
-                } else {
-                    return self.regions
-                        .map { regions in
-                            regions.filter { $0.contains(query) }
-                        }
+                    // 검색어가 비어 있으면 전체 데이터를 표시
+                    updateFilteredRegions()
                 }
-            }.bind(to: filteredRegions)
-            .disposed(by: disposeBag)
+            }).disposed(by: disposeBag)
         
         searchView.cancelButton.rx.tap
             .subscribe(onNext: { [weak self] in
@@ -100,12 +114,16 @@ class SearchViewController: UIViewController, UICollectionViewDelegateFlowLayout
     private func bindTableView() {
         filteredRegions
             .bind(to: searchView.tableView.rx.items(cellIdentifier: "cell", cellType: UITableViewCell.self)) { (row, region, cell) in
-                cell.textLabel?.text = region
+                cell.textLabel?.text = region.addressName
             }.disposed(by: disposeBag)
         
         searchView.tableView.rx.itemSelected
             .subscribe(onNext: { [weak self] indexPath in
-                let addRegionVC = UINavigationController(rootViewController: AddRegionViewController())
+                let viewController = AddRegionViewController()
+                if let self = self {
+                    viewController.dataSetting(data: self.filteredRegions.value[indexPath.item])
+                }
+                let addRegionVC = UINavigationController(rootViewController: viewController)
                 addRegionVC.modalPresentationStyle = .pageSheet
                 self?.present(addRegionVC, animated: true, completion: nil)
             }).disposed(by: disposeBag)
@@ -122,20 +140,16 @@ class SearchViewController: UIViewController, UICollectionViewDelegateFlowLayout
                 .disposed(by: disposeBag)
     }
     
-    //
-    //    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-    //        return 10
-    //    }
-    //
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        guard let query = searchBar.text else { return }
+        print("Searching for: \(query)")
+        searchVM.fetchLocation(query: query)
+    }
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let height = collectionView.frame.height / 4 - 10
         let widht = collectionView.frame.width
         return CGSize(width: widht, height: height)
     }
-    
-    //    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-    //        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SearchCollectionViewCell", for: indexPath) as! SearchCollectionViewCell
-    //        return cell
-    //    }
     
 }
