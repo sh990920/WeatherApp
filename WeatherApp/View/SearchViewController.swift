@@ -105,7 +105,7 @@ class SearchViewController: UIViewController, UICollectionViewDelegateFlowLayout
         
         searchView.tableView.rx.itemSelected
             .subscribe(onNext: { [weak self] indexPath in
-                let addRegionVC = AddRegionViewController()
+                let addRegionVC = UINavigationController(rootViewController: AddRegionViewController())
                 addRegionVC.modalPresentationStyle = .pageSheet
                 self?.present(addRegionVC, animated: true, completion: nil)
             }).disposed(by: disposeBag)
