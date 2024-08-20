@@ -15,6 +15,10 @@ class SearchViewController: UIViewController, UICollectionViewDelegateFlowLayout
     private let regions = Observable.just(["서울특별시", "경기도", "전라도", "강원도"])
     private let filteredRegions = BehaviorRelay<[String]>(value: [])
     
+    var locationText: Observable<String> {
+        searchView.searchBar.rx.text.orEmpty.asObservable()
+    }
+    
     private let disposeBag = DisposeBag()
     private var searchView = SearchView(frame: .zero)
     //득령추가
@@ -48,8 +52,19 @@ class SearchViewController: UIViewController, UICollectionViewDelegateFlowLayout
         bindViewModel()
         weatherVM.fetchWeather()
         
-        //지현 추가
-        searchVM.fetchLocation()
+        searchView.searchBar.rx.text.orEmpty
+            .subscribe(onNext: { [weak self] text in
+                self?.searchVM.updateText(text)
+            })
+            .disposed(by: disposeBag)
+
+        searchVM.locationInfoSubject
+            .observe(on: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] info in
+                print("Text Field에 입력된 데이터 출력 \(info.addressName)")
+            })
+            .disposed(by: disposeBag)
+        
     }
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.view.endEditing(true)
