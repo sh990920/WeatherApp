@@ -19,6 +19,10 @@ class SearchViewController: UIViewController, UICollectionViewDelegateFlowLayout
         }
     }
     
+    var locationText: Observable<String> {
+        searchView.searchBar.rx.text.orEmpty.asObservable()
+    }
+    
     private let disposeBag = DisposeBag()
     private var searchView = SearchView(frame: .zero)
     //득령추가
