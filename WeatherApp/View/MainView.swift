@@ -123,13 +123,13 @@ class MainView: UIView {
         scrollView.addSubview(contentView)
         
         scrollView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
+            $0.top.leading.trailing.equalToSuperview()
+            $0.bottom.equalToSuperview().inset(84)
         }
         
         contentView.snp.makeConstraints {
             $0.edges.equalToSuperview()
             $0.width.equalToSuperview()
-
         }
     }
     
@@ -258,15 +258,14 @@ class MainView: UIView {
         }
         
         humidityLabel.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(8)
-            $0.leading.equalToSuperview().offset(30)
+            $0.bottom.equalTo(humidityDetailLabel.snp.top).offset(-16)
+            $0.centerX.equalTo(humidityDetailLabel.snp.centerX)
             $0.height.equalTo(16)
         }
         
         humidityDetailLabel.snp.makeConstraints {
-            $0.top.equalTo(humidityLabel.snp.bottom).offset(8)
-            $0.leading.equalTo(humidityLabel.snp.leading)
-            $0.bottom.equalToSuperview().offset(-16)
+            $0.centerX.equalToSuperview()
+            $0.centerY.equalToSuperview().offset(10)
             $0.height.equalTo(48)
         }
         
