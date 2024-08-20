@@ -13,7 +13,7 @@ class SearchViewModel {
     private let disposeBag = DisposeBag()
     
     //view가 구독할 Subject
-    let locationInfoSubject = PublishSubject<address>()
+    let locationInfoSubject = PublishSubject<LocationInfo>()
     let text = BehaviorSubject<String>(value: "")
     let network = NetworkManager.shared
     
@@ -23,15 +23,15 @@ class SearchViewModel {
             baseURL: "https://dapi.kakao.com",
             headerParameters: ["Authorization": "KakaoAK 3c7a90563f65e8afc9ebfac9b753c698"],
             path: "/v2/local/search/address",
-            queryParameters: ["query" :"\(query)"]
+            queryParameters: ["query" :query]
         )
         
         network.fetch(endpoint: endpoint)
-            .subscribe(onSuccess: { [weak self] (result: address) in
+            .subscribe(onSuccess: { [weak self] (result: LocationInfo) in
                 print("+++called SUCCESS Search View Model+++")
                 self?.locationInfoSubject.onNext(result)
                 print("locationInfo result: \(result)")
-            }, onFailure: { [weak self] error in
+            }, onFailure: { error in
                 print("called ERROR Search ViewModel: \(error)")
             }).disposed(by: disposeBag)
     }
