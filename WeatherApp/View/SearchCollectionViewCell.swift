@@ -121,8 +121,8 @@ class SearchCollectionViewCell: UICollectionViewCell {
         }
         locationLabel.text = "\(currentLocationLabel)"
         tempLabel.text = "\(Int(weather.main.temp - 273.15))°C"
-        maxTempLabel.text = "\(Int(weather.main.tempMax - 273.15))°C"
-        minTempLable.text = "\(Int(weather.main.tempMin - 273.15))°C"
+        maxTempLabel.text = "최고 : \(Int(weather.main.tempMax - 273.15))°C"
+        minTempLable.text = "최저 : \(Int(weather.main.tempMin - 273.15))°C"
 
     }
     

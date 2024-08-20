@@ -23,4 +23,3 @@ struct Document: Codable {
         case x, y
     }
 }
-
