@@ -13,6 +13,8 @@ class WeatherViewModel {
     
     private let disposeBag = DisposeBag()
     
+    let searchVM = SearchViewModel()
+    
     // UI와 바인딩될 날씨 데이터를 보유하는 BehaviorSubject
     let weatherDataSubject = BehaviorSubject<[List]>(value: [])
     let weatherCitySubject = BehaviorSubject<City>(value: City(id: 0, name:"", coord: Coord(lat: 0.0, lon: 0.0), country: "", population: 0, timezone: 0, sunrise: 0, sunset: 0))
@@ -20,18 +22,17 @@ class WeatherViewModel {
     let network = NetworkManager.shared
     
     //MARK: - 날씨 가져오기
-    func fetchWeather() {
+    func fetchWeather(lat: String, lon: String) {
         
         let endpoint = Endpoint(
             baseURL: "https://api.openweathermap.org",
             path: "/data/2.5/forecast",
             queryParameters: [
-                "lat": "37",
-                "lon": "126",
+                "lat": "\(lat)",
+                "lon": "\(lon)",
                 "appid": "9ac664b5f66b54917a75e04977cbbea0"
             ]
         )
-        
         
 //        networkmanager을 통해 데이터가져오기
         network.fetch(endpoint: endpoint)

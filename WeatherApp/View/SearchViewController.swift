@@ -15,6 +15,11 @@ class SearchViewController: UIViewController, UICollectionViewDelegateFlowLayout
     private let regions = Observable.just(["서울특별시", "경기도", "전라도", "강원도"])
     private let filteredRegions = BehaviorRelay<[String]>(value: [])
     
+    private var latitude = ""
+    private var longitude = ""
+    private var currentLocationLabel = ""
+    
+    
     var locationText: Observable<String> {
         searchView.searchBar.rx.text.orEmpty.asObservable()
     }
@@ -50,21 +55,27 @@ class SearchViewController: UIViewController, UICollectionViewDelegateFlowLayout
         //득령추가
         print("called SearchVC")
         bindViewModel()
-        weatherVM.fetchWeather()
-        
         searchView.searchBar.rx.text.orEmpty
             .subscribe(onNext: { [weak self] text in
                 self?.searchVM.updateText(text)
-            })
-            .disposed(by: disposeBag)
-
-        searchVM.locationInfoSubject
-            .observe(on: MainScheduler.instance)
-            .subscribe(onNext: { [weak self] info in
-                print("Text Field에 입력된 데이터 출력 \(info.addressName)")
+                self?.currentLocationLabel = text
             })
             .disposed(by: disposeBag)
         
+        searchVM.locationInfoSubject
+            .observe(on: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] info in
+                print("Text Field에 입력된 데이터 출력 \(info)")
+                
+                for i in info {
+                    print("called X:\(self!.latitude), Y:\(self!.longitude)")
+                    self!.longitude = i.x
+                    self?.latitude = i.y
+                }
+                self?.weatherVM.fetchWeather(lat: self!.latitude, lon: self!.longitude)
+            })
+            .disposed(by: disposeBag)
+
     }
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.view.endEditing(true)
@@ -132,7 +143,7 @@ class SearchViewController: UIViewController, UICollectionViewDelegateFlowLayout
             .bind(to: searchView.collectionView.rx.items(
                 cellIdentifier: SearchCollectionViewCell.reuseIdentifier,
                 cellType: SearchCollectionViewCell.self)) { row, weatherItem, cell in
-                    cell.configureStackViewUI(with: weatherItem)
+                    cell.configureStackViewUI(with: weatherItem, currentLocationLabel: self.currentLocationLabel)
                 }
                 .disposed(by: disposeBag)
     }

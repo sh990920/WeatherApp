@@ -13,12 +13,12 @@ class SearchViewModel {
     private let disposeBag = DisposeBag()
     
     //view가 구독할 Subject
-    let locationInfoSubject = PublishSubject<address>()
+    let locationInfoSubject = BehaviorSubject<[Document]>(value: [])
     let text = BehaviorSubject<String>(value: "")
     let network = NetworkManager.shared
     
     //MARK: - 검색한 위치의 X, Y 좌표 구하기
-    func fetchLocation(query: String){
+    func fetchLocation(query: String) {
         let endpoint = Endpoint (
             baseURL: "https://dapi.kakao.com",
             headerParameters: ["Authorization": "KakaoAK 3c7a90563f65e8afc9ebfac9b753c698"],
@@ -27,9 +27,9 @@ class SearchViewModel {
         )
         
         network.fetch(endpoint: endpoint)
-            .subscribe(onSuccess: { [weak self] (result: address) in
+            .subscribe(onSuccess: { [weak self] (result: LocationInfo) in
                 print("+++called SUCCESS Search View Model+++")
-                self?.locationInfoSubject.onNext(result)
+                self?.locationInfoSubject.onNext(result.documents)
                 print("locationInfo result: \(result)")
             }, onFailure: { [weak self] error in
                 print("called ERROR Search ViewModel: \(error)")
@@ -39,7 +39,6 @@ class SearchViewModel {
             text.onNext(newText)
             fetchLocation(query: newText)
         }
-
-
 }
+
     
