@@ -34,18 +34,17 @@ struct List: Codable {
     let dt: Int
     let main: MainClass
     let weather: [Weather]
-    let clouds: Clouds
-    let wind: Wind
-    let visibility: Int
-    let pop: Double
-    let sys: Sys
+//    let clouds: Clouds
+//    let wind: Wind
+//    let visibility: Int
+//    let pop: Double
+//    let sys: Sys
     let dtTxt: String
-    let rain: Rain?
+//    let rain: Rain?
 
     enum CodingKeys: String, CodingKey {
-        case dt, main, weather, clouds, wind, visibility, pop, sys
+        case dt, main, weather
         case dtTxt = "dt_txt"
-        case rain
     }
 }
 
@@ -56,20 +55,23 @@ struct Clouds: Codable {
 
 // MARK: - MainClass
 struct MainClass: Codable {
-    let temp, feelsLike, tempMin, tempMax: Double
-    let pressure, seaLevel, grndLevel, humidity: Int
-    let tempKf: Double
+//    let temp, feelsLike, tempMin, tempMax: Double
+//    let pressure, seaLevel, grndLevel, humidity: Int
+//    let tempKf: Double
+    let temp, tempMin, tempMax: Double
+    let humidity: Int
+//    let tempKf: Double
 
     enum CodingKeys: String, CodingKey {
         case temp
-        case feelsLike = "feels_like"
+//        case feelsLike = "feels_like"
         case tempMin = "temp_min"
         case tempMax = "temp_max"
-        case pressure
-        case seaLevel = "sea_level"
-        case grndLevel = "grnd_level"
+//        case pressure
+//        case seaLevel = "sea_level"
+//        case grndLevel = "grnd_level"
         case humidity
-        case tempKf = "temp_kf"
+//       case tempKf = "temp_kf"
     }
 }
 
@@ -94,27 +96,27 @@ enum Pod: String, Codable {
 
 // MARK: - Weather
 struct Weather: Codable {
-    let id: Int
-    let main: MainEnum
-    let description: Description
+//    let id: Int
+//    let main: MainEnum
+    let description: String
     let icon: String
 }
 
-enum Description: String, Codable {
-    case brokenClouds = "broken clouds"
-    case clearSky = "clear sky"
-    case fewClouds = "few clouds"
-    case lightRain = "light rain"
-    case overcastClouds = "overcast clouds"
-    case scatteredClouds = "scattered clouds"
-    case unknown // 기본값
-
-    init(from decoder: Decoder) throws {
-        let container = try decoder.singleValueContainer()
-        let rawValue = try container.decode(String.self)
-        self = Description(rawValue: rawValue) ?? .unknown
-    }
-}
+//enum Description: String, Codable {
+//    case brokenClouds = "broken clouds"
+//    case clearSky = "clear sky"
+//    case fewClouds = "few clouds"
+//    case lightRain = "light rain"
+//    case overcastClouds = "overcast clouds"
+//    case scatteredClouds = "scattered clouds"
+//    case unknown // 기본값
+//
+//    init(from decoder: Decoder) throws {
+//        let container = try decoder.singleValueContainer()
+//        let rawValue = try container.decode(String.self)
+//        self = Description(rawValue: rawValue) ?? .unknown
+//    }
+//}
 
 enum MainEnum: String, Codable {
     case clear = "Clear"

@@ -207,7 +207,7 @@ class MainView: UIView {
         tableView.snp.makeConstraints {
             $0.top.equalTo(collectionView.snp.bottom).offset(20)
             $0.leading.trailing.equalToSuperview().inset(20)
-            $0.height.equalTo(279)
+            $0.height.equalTo(296)
             $0.bottom.equalToSuperview().offset(-30)
         }
     }
@@ -328,6 +328,29 @@ class MainView: UIView {
         headerView.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 30)
         
         return headerView
+    }
+    
+    // MARK: - 데이터 수정
+    func updateValue(currentWeather: WeatherResponse) {
+        temperatureLabel.text = "\(Int(currentWeather.main.temp))°C"
+        descriptionLabel.text = "\(currentWeather.weather[0].description)"
+        humidityDetailLabel.text = "\(currentWeather.main.humidity)%"
+        let sunriseDate = Date(timeIntervalSince1970: TimeInterval(currentWeather.sys.sunrise))
+        let sunsetDate = Date(timeIntervalSince1970: TimeInterval(currentWeather.sys.sunset))
+        let dateFormatter = DateFormatter()
+        dateFormatter.timeZone = TimeZone(secondsFromGMT: currentWeather.timezone)
+        dateFormatter.dateFormat = "HH:mm"
+        sunriseDetailLabel.text = "\(dateFormatter.string(from: sunriseDate))"
+        sunsetDetailLabel.text = "\(dateFormatter.string(from: sunsetDate))"
+    }
+    
+    func updateAddressName(addressName: String) {
+        locationLabel.text = addressName
+        locationDetailLabel.text = ""
+    }
+    
+    func mainUpdateAddressName(addressName: String) {
+        locationDetailLabel.text = addressName
     }
 }
 
