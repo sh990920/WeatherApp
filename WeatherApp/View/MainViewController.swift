@@ -43,6 +43,10 @@ class MainViewController: UIViewController, CLLocationManagerDelegate {
     private var otherWeather: [showWeekWeather] = [] {
         didSet {
             tableViewData.accept(otherWeather)
+            
+            // 날짜를 기준으로 내림차순으로 정렬함
+            let sortedWeather = otherWeather.sorted { $0.date < $1.date }
+            tableViewData.accept(sortedWeather)
         }
     }
     

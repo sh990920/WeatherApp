@@ -62,7 +62,7 @@ class SearchCollectionViewCell: UICollectionViewCell {
     
     private let view: UIView = {
         let view = UIImageView()
-        view.image = UIImage(named: "rain")
+        view.image = UIImage(named: "sky")
         view.layer.cornerRadius = 10
         view.layer.masksToBounds = true
         return view
