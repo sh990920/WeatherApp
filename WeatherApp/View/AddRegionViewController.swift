@@ -27,6 +27,9 @@ class AddRegionViewController: UIViewController {
     private var otherWeather: [showWeekWeather] = [] {
         didSet {
             tableViewData.accept(otherWeather)
+            // 날짜 내림차순
+            let sortedWeather = otherWeather.sorted { $0.date < $1.date }
+            tableViewData.accept(sortedWeather)
         }
     }
     
