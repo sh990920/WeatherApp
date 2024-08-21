@@ -24,9 +24,13 @@ class MainViewController: UIViewController, CLLocationManagerDelegate {
     
     private var searchData: AddressInfo? = nil {
         didSet {
-            if let data = searchData {
-                let address = "\(data.documents[0].roadAddress.region1depthName) \(data.documents[0].roadAddress.region2depthName)"
+            if let data = searchData,
+               let firstDocument = data.documents.first {
+                let address = "\(firstDocument.roadAddress.region1depthName) \(firstDocument.roadAddress.region2depthName)"
                 mainView.mainUpdateAddressName(addressName: address)
+            } else {
+                // documents 배열이 비어있을 경우의 처리
+                mainView.mainUpdateAddressName(addressName: "주소 정보 없음")
             }
         }
     }
