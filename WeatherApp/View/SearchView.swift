@@ -9,7 +9,23 @@ import UIKit
 import SnapKit
 
 class SearchView: UIView {
+    
+    lazy var searchBar: UISearchBar = {
+        let searchBar = UISearchBar()
+        searchBar.backgroundImage = UIImage()
+        searchBar.placeholder = "도시 또는 위치 검색"
+        return searchBar
+    }()
 
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        self.backgroundColor = .white
+        configureUI()
+        setConstraints()
+        
+    }
+    
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.text = "날씨"
@@ -17,12 +33,7 @@ class SearchView: UIView {
         return label
     }()
     
-    let searchBar: UISearchBar = {
-        let searchBar = UISearchBar()
-        searchBar.placeholder = "도시 또는 위치 검색"
-        searchBar.backgroundImage = UIImage()
-        return searchBar
-    }()
+
     
     let cancelButton: UIButton = {
         let button = UIButton(type: .system)
@@ -58,13 +69,7 @@ class SearchView: UIView {
         return collectionView
     }()
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        self.backgroundColor = .white
-        configureUI()
-        setConstraints()
-        
-    }
+
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")

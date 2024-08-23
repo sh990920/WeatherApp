@@ -24,6 +24,7 @@ struct Document: Codable {
     }
 }
 
+
 struct AddressInfo: Codable {
     let documents: [AddressDocument]
 }

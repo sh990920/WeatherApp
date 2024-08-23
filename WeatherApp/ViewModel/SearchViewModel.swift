@@ -10,13 +10,13 @@ import RxSwift
 
 class SearchViewModel {
     
-    private let disposeBag = DisposeBag()
+    let network = NetworkManager.shared
     
-    //view가 구독할 Subject
+    private let disposeBag = DisposeBag()
 
     let locationInfoSubject = PublishSubject<LocationInfo>()
     let text = BehaviorSubject<String>(value: "")
-    let network = NetworkManager.shared
+    
     let locationListSubject = PublishSubject<[LocationInfo]>()
     
     let addressInfoSubject = PublishSubject<AddressInfo>()

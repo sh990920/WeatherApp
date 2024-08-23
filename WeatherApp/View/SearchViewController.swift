@@ -12,6 +12,9 @@ import RxCocoa
 
 class SearchViewController: UIViewController, UICollectionViewDelegateFlowLayout, UISearchBarDelegate {
     
+    private var searchView = SearchView(frame: .zero)
+    searchView.searchBar
+    
     private let filteredRegions = BehaviorRelay<[Document]>(value: [])
     private var searchData: LocationInfo? = nil {
         didSet {
@@ -74,7 +77,9 @@ class SearchViewController: UIViewController, UICollectionViewDelegateFlowLayout
     }
     
     private let disposeBag = DisposeBag()
-    private var searchView = SearchView(frame: .zero)
+    
+    
+    
     //득령추가
     private let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()

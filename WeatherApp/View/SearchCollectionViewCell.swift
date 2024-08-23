@@ -62,12 +62,15 @@ class SearchCollectionViewCell: UICollectionViewCell {
     
     private let view: UIView = {
         let view = UIImageView()
-        view.image = UIImage(named: "rain")
-        view.layer.cornerRadius = 10
+        view.image = UIImage(named: "sky")
+        view.layer.cornerRadius = 15
         view.layer.masksToBounds = true
         return view
     }()
-    
+    let apiKey = "your_api_key_here"
+    let lat = "37.5665"
+    let lon = "126.9780"
+  
     override init(frame: CGRect) {
         super.init(frame: frame)
         configureUI()
